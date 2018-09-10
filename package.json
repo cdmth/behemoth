@@ -6,6 +6,7 @@
   "author": "=",
   "license": "MIT",
   "scripts": {
+    "build": "cross-env NODE_ENV=development tsc",
     "dev": "cross-env NODE_ENV=development tsc --watch | cross-env NODE_ENV=development nodemon ./build/src/app.js --watch build",
     "compile": "cross-env NODE_ENV=development tsc --watch",
     "nodemon": "cross-env NODE_ENV=development nodemon ./build/src/app.js --watch build",
