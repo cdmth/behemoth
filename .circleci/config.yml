@@ -34,4 +34,4 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
         
       # run tsc to compile /build
-      - run: tsc
+      - run: yarn build
