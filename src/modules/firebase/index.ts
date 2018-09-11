@@ -15,9 +15,6 @@ firebase.initializeApp({
 
 const mapSnapshotToEntity = snapshot => ({ id: snapshot.key, ...snapshot.val() })
 const mapSnapshotToEntities = snapshot => map(snapshot.val(), (value, id) => ({ id, ...value }))
-
-console.log(mapSnapshotToEntities)
-
 const ref = path => firebase.database().ref(path)
 const getValue = path => ref(path).once('value')
 const getEntity = path => getValue(path).then(mapSnapshotToEntity)

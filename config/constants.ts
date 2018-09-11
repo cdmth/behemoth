@@ -4,7 +4,7 @@ const defaultConfig = {
   authDomain: "behemoth-1f3a5.firebaseapp.com",
   databaseURL: "https://behemoth-1f3a5.firebaseio.com",
   projectId: "behemoth-1f3a5",
-  storageBucket: "",
+  storageBucket: "behemoth-1f3a5.appspot.com",
   messagingSenderId: "1023358943709"
 }
 

@@ -4,10 +4,7 @@ import * as firebaseFunctions from '../firebase'
 const customerResolvers = {
     //Date: GraphqlDate,
     Query: {
-        customers: () => {
-            console.log(firebaseFunctions.getEntities('customers'))
-            firebaseFunctions.getEntities('customers')
-        }
+        customers: () => firebaseFunctions.getEntities('customers')
     }/*,
     Mutation: {
         createCustomer: (_, args) => Customer.create(args),

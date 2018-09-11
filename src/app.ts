@@ -1,13 +1,9 @@
 import * as express from 'express'
-import * as bodyParser from 'body-parser'
 
 import constants from '../config/constants'
 import { server } from '../src/modules/graphql'
 
 const app = express()
-
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true}))
 
 if(process.env.NODE_ENV === 'development') {
   const morgan = require('morgan')
