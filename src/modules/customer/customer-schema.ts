@@ -4,12 +4,13 @@ const customersSchema = `
     }
 
     type Customer {
-        businessId: String!
+        _id: String!
+        businessId: String
         name: String
     }
 
     type Query {
-        customer(businessId: String!): Customer
+        customer(_id: String!): Customer
         customers: [Customer]
     }
 
@@ -20,11 +21,12 @@ const customersSchema = `
         ): Customer
 
         updateCustomer(
-            businessId: String!
+            _id: String!
+            businessId: String
             name: String
         ): Customer
 
-        deleteCustomer(businessId: String!):Status
+        deleteCustomer(_id: String!):Status
     }
 `
 

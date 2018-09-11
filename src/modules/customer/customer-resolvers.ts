@@ -1,17 +1,19 @@
-import * as firebaseFunctions from '../firebase'
-//import * as GraphqlDate from 'graphql-date'
+import { getEntity, getEntities, insertEntity, updateEntity, deleteEntity } from '../firebase'
+
+const path = 'customers'
 
 const customerResolvers = {
     //Date: GraphqlDate,
     Query: {
-        customers: () => firebaseFunctions.getEntities('customers')
-    }/*,
+        customer: (_, { _id }) => getEntity(path, _id),
+        customers: () => getEntities(path)
+    },
     Mutation: {
-        createCustomer: (_, args) => Customer.create(args),
-        updateCustomer: (_, {_id, ...rest}) => Customer.update(_id, rest, {new: true}),
+        createCustomer: (_, args) => insertEntity(path, args),
+        updateCustomer: (_, { _id, ...rest }) => updateEntity(path, _id, rest),
         deleteCustomer: async (_, { _id }) => {
             try {
-                await Customer.delete(_id)
+                await deleteEntity(path, _id)
                 return {
                     message: 'Customer deleted, id: ' + _id
                 }
@@ -19,7 +21,7 @@ const customerResolvers = {
                 throw Error(err)
             }
         }
-    }*/
+    }
 }
 
 export default customerResolvers
