@@ -1,6 +1,6 @@
 import * as admin from 'firebase-admin';
 
-import { map, mapKeys } from 'lodash'
+import { map } from 'lodash'
 require('dotenv').config()
 
 const serviceAccount = {
@@ -31,13 +31,13 @@ admin.initializeApp({
 const mapSnapshotToEntities = snapshot => {
   return map(snapshot.val(), (value, id) => ({ id, ...value }))
 }
-const ref = path => admin.database().ref(path)
-const getValue = path => ref(path).once('value')
-const getEntity = (path, id) => ref(path).child(id).once('value').then((res) => res.val())
-const getEntities = path => getValue(path).then(mapSnapshotToEntities)
-const insertEntity = (path, entity) => ref(path).push(entity)
-const updateEntity = (path, id, entity) => ref(path).child(id).update(entity)
-const deleteEntity = (path, id) => ref(path).child(id).remove()
+const ref = (path: string) => admin.database().ref(path)
+const getValue = (path: string) => ref(path).once('value')
+const getEntity = (path: string, id: string) => ref(path).child(id).once('value').then((res) => res.val())
+const getEntities = (path: string) => getValue(path).then(mapSnapshotToEntities)
+const insertEntity = (path: string, entity) => ref(path).push(entity)
+const updateEntity = (path: string, id: string, entity) => ref(path).child(id).update(entity)
+const deleteEntity = (path: string, id: string) => ref(path).child(id).remove()
 
 export { getEntity, getEntities, insertEntity, updateEntity, deleteEntity }
 

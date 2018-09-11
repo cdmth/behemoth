@@ -1,6 +1,6 @@
 import { getEntity, getEntities, insertEntity, updateEntity, deleteEntity } from '../firebase'
 
-const path = 'customers'
+const path : string = 'customers'
 
 const customerResolvers = {
     //Date: GraphqlDate,
@@ -10,8 +10,8 @@ const customerResolvers = {
     },
     Mutation: {
         createCustomer: (_, args) => insertEntity(path, args),
-        updateCustomer: (_, { _id, ...rest }) => updateEntity(path, _id, rest),
-        deleteCustomer: async (_, { _id }) => {
+        updateCustomer: (_, { _id, ...rest }: { _id: string }) => updateEntity(path, _id, rest),
+        deleteCustomer: async (_, { _id } : { _id: string }) => {
             try {
                 await deleteEntity(path, _id)
                 return {
