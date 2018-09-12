@@ -1,7 +1,6 @@
 import Project from '../project/Project'
 
 const customersSchema = 
-    Project +
     `
     type Status {
         message: String!
@@ -21,7 +20,7 @@ const customersSchema =
 
     type Mutation {
         createCustomer(
-            businessId: String,
+            businessId: String
             name: String
         ): Customer
 

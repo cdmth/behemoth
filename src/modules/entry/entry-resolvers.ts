@@ -1,6 +1,6 @@
-import { getEntity, getEntities, insertEntityToParent, updateEntity, deleteEntity } from '../firebase'
+import { getEntity, getEntities, insertEntity, updateEntity, deleteEntity } from '../firebase'
 
-const path : string = 'customers/projects/entries'
+const path : string = 'entries'
 
 const entryResolvers = {
     Query: {
@@ -8,7 +8,7 @@ const entryResolvers = {
         entries: () => getEntities(path)
     },
     Mutation: {
-        createEntry: (_, args) => insertEntityToParent(path, args),
+        createEntry: (_, args) => insertEntity(path, args),
         updateEntry: (_, { _id, ...rest }: { _id: string }) => updateEntity(path, _id, rest),
         deleteEntry: async (_, { _id } : { _id: string }) => {
             try {

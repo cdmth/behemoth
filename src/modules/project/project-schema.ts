@@ -1,7 +1,4 @@
-import Project from './Project'
-
-const projectSchema = 
-  Project + 
+const projectSchema =
   `
   type Status {
     message: String!
@@ -14,8 +11,8 @@ const projectSchema =
 
   type Mutation {
     createProject(
-      _parentId: String!
-      name: String
+      name: String,
+      companyId: String
     ): Project
 
     updateProject(

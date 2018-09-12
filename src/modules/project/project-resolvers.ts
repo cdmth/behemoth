@@ -1,6 +1,6 @@
 import { getEntity, getEntities, insertEntity, updateEntity, deleteEntity } from '../firebase'
 
-const path : string = 'customers/projects'
+const path : string = 'projects'
 
 const projectResolvers = {
     Query: {

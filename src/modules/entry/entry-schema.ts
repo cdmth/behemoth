@@ -1,28 +1,35 @@
 import Entry from './Entry'
 
 const entrySchema = 
-  Entry + 
   `
   type Status {
     message: String!
   }
 
+  type Entry {
+    projectId: String!
+    start: Int
+    end: Int
+    description: String
+}
+
   type Query {
-    entry(_id: String!): Entry
+    entry(projectId: String!): Entry
     entries: [Entry]
   } 
 
   type Mutation {
     createEntry(
-      startAt: String!,
-      endAt: String,
+      projectId: String!
+      start: Int
+      end: Int
       description: String
     ): Entry
 
     updateEntry(
-      _id: String!,
-      startAt: String,
-      endAt: String,
+      _id: String!
+      startAt: String
+      endAt: String
       description: String
     ): Entry
 

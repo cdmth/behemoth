@@ -42,7 +42,19 @@ const ref = (path: string) => admin.database().ref(path)
 const getValue = (path: string) => ref(path).once('value')
 const getEntity = (path: string, id: string) => ref(path).child(id).once('value').then((res) => res.val())
 const getEntities = (path: string) => getValue(path).then(mapSnapshotToEntities)
-const insertEntity = (path: string, entity) => ref(path).push(entity)
+
+
+// Another way to make this
+// const insertEntity = (path: string, entity) => ref(path).push(entity)
+//   .then(ref => ref.once('value')
+//   .then(res => res.val()))
+
+const insertEntity = async (path: string, entity) => {
+  const pusher = await ref(path).push(entity)
+  const pushed = await pusher.ref.once('value')
+  return pushed.val()
+}
+
 const insertEntityToParent = (path: string, entity) => ref(path).parent.push(entity)
 const updateEntity = (path: string, id: string, entity) => ref(path).child(id).update(entity)
 const deleteEntity = (path: string, id: string) => ref(path).child(id).remove()
