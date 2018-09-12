@@ -1,7 +1,5 @@
-import Entry from './Entry'
-
 const entrySchema = 
-  `
+`
   type Status {
     message: String!
   }
