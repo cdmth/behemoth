@@ -4,13 +4,21 @@ import { ApolloServer } from 'apollo-server-express'
 
 import customerSchema from '../customer/customer-schema' 
 import customerResolvers from '../customer/customer-resolvers'
+import entrySchema from '../entry/entry-schema'
+import entryResolvers from '../entry/entry-resolvers'
+import projectSchema from '../project/project-schema'
+import projectResolvers from '../project/project-resolvers'
 
 const allSchemas = [
-    customerSchema
+    customerSchema,
+    entrySchema,
+    projectSchema
 ]
 
 const allResolvers = [
-    customerResolvers
+    customerResolvers,
+    entryResolvers,
+    projectResolvers
 ]
 
 const typeDefs = mergeTypes(allSchemas, { all: true })

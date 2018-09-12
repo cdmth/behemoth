@@ -1,4 +1,8 @@
-const customersSchema = `
+import Project from '../project/Project'
+
+const customersSchema = 
+    Project +
+    `
     type Status {
         message: String!
     }
@@ -7,6 +11,7 @@ const customersSchema = `
         _id: String!
         businessId: String
         name: String
+        projects: [Project]
     }
 
     type Query {
@@ -26,7 +31,7 @@ const customersSchema = `
             name: String
         ): Customer
 
-        deleteCustomer(_id: String!):Status
+        deleteCustomer(_id: String!): Status
     }
 `
 

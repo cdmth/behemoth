@@ -1,3 +1,5 @@
+import { GraphqlDate } from 'graphql-date'
+
 import { getEntity, getEntities, insertEntity, updateEntity, deleteEntity } from '../firebase'
 
 const path : string = 'customers'
@@ -16,9 +18,9 @@ const customerResolvers = {
                 await deleteEntity(path, _id)
                 return {
                     message: 'Customer deleted, id: ' + _id
-                }
+                } 
             } catch (err) {
-                throw Error(err)
+                throw new Error(err)
             }
         }
     }
