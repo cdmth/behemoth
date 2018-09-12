@@ -1,13 +1,10 @@
-import { GraphqlDate } from 'graphql-date'
-
 import { getEntity, getEntities, insertEntity, updateEntity, deleteEntity } from '../firebase'
 
 const path : string = 'customers'
 
 const customerResolvers = {
-    //Date: GraphqlDate,
     Query: {
-        customer: (_, { _id }) => getEntity(path, _id),
+        customer: (_, { _id } : { _id : string}) => getEntity(path, _id),
         customers: () => getEntities(path)
     },
     Mutation: {

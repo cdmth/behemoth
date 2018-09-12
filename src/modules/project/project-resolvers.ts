@@ -4,7 +4,7 @@ const path : string = 'projects'
 
 const projectResolvers = {
     Query: {
-        project: (_, { _id }) => getEntity(path, _id),
+        project: (_, { _id } : { _id : string }) => getEntity(path, _id),
         projects: () => getEntities(path)
     },
     Mutation: {

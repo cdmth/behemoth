@@ -1,6 +1,6 @@
 import * as admin from 'firebase-admin';
 
-import { map, mapKeys } from 'lodash'
+import { mapKeys } from 'lodash'
 require('dotenv').config()
 
 const serviceAccount = {
@@ -71,6 +71,7 @@ const insertEntity = async (path: string, entity) => {
 }
 
 const insertEntityToParent = (path: string, entity) => ref(path).parent.push(entity)
+
 const updateEntity = async (path: string, id: string, entity) => {
   await ref(path).child(id).update(entity)
   return getEntity(path, id)

@@ -4,7 +4,7 @@ const path : string = 'entries'
 
 const entryResolvers = {
     Query: {
-        entry: (_, { _id }) => getEntity(path, _id),
+        entry: (_, { _id } : { _id : string}) => getEntity(path, _id),
         entries: () => getEntities(path)
     },
     Mutation: {
