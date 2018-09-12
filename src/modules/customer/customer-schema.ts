@@ -1,5 +1,3 @@
-import Project from '../project/Project'
-
 const customersSchema = 
     `
     type Status {
@@ -10,7 +8,6 @@ const customersSchema =
         _id: String!
         businessId: String
         name: String
-        projects: [Project]
     }
 
     type Query {

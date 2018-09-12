@@ -4,6 +4,10 @@ const projectSchema =
     message: String!
   }
 
+  type Project {
+    name: String
+  }
+
   type Query {
     project(_id: String!): Project
     projects: [Project]
