@@ -30,33 +30,51 @@ admin.initializeApp({
 
 const mapSnapshotToEntities = snapshot => {
   let entities = []
+
   mapKeys(snapshot.val(), (value, key) => { 
     value._id = key
     entities.push(value)
     return key + value
   })
+
   return entities
 }
 
 const ref = (path: string) => admin.database().ref(path)
 const getValue = (path: string) => ref(path).once('value')
-const getEntity = (path: string, id: string) => ref(path).child(id).once('value').then((res) => res.val())
-const getEntities = (path: string) => getValue(path).then(mapSnapshotToEntities)
 
+const getEntity = async (path: string, id: string) => {
+  try {
+    const getter = await ref(path).child(id).once('value')
+    return getter.val()
+  } catch (error) {
+    console.log("something went wrong")
+  }
+}
 
-// Another way to make this
-// const insertEntity = (path: string, entity) => ref(path).push(entity)
-//   .then(ref => ref.once('value')
-//   .then(res => res.val()))
+const getEntities = (path: string) => {
+  try {
+    return getValue(path).then(mapSnapshotToEntities)
+  } catch (error) {
+    console.log(error)
+  }
+}
 
 const insertEntity = async (path: string, entity) => {
-  const pusher = await ref(path).push(entity)
-  const pushed = await pusher.ref.once('value')
-  return pushed.val()
+  try {
+    const pusher = await ref(path).push(entity)
+    const pushed = await pusher.ref.once('value')
+    return pushed.val()
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 const insertEntityToParent = (path: string, entity) => ref(path).parent.push(entity)
-const updateEntity = (path: string, id: string, entity) => ref(path).child(id).update(entity)
+const updateEntity = async (path: string, id: string, entity) => {
+  await ref(path).child(id).update(entity)
+  return getEntity(path, id)
+}
 const deleteEntity = (path: string, id: string) => ref(path).child(id).remove()
 
 export { getEntity, getEntities, insertEntity, updateEntity, deleteEntity, insertEntityToParent }

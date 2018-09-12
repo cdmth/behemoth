@@ -5,6 +5,7 @@ const entrySchema =
   }
 
   type Entry {
+    _id: String
     projectId: String!
     start: Int
     end: Int
@@ -12,7 +13,7 @@ const entrySchema =
 }
 
   type Query {
-    entry(projectId: String!): Entry
+    entry(_id: String!): Entry
     entries: [Entry]
   } 
 

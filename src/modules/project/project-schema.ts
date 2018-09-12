@@ -5,6 +5,7 @@ const projectSchema =
   }
 
   type Project {
+    _id: String
     name: String
   }
 
