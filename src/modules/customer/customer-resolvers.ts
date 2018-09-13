@@ -1,16 +1,16 @@
 import { getEntity, getEntities, insertEntity, updateEntity, deleteEntity } from '../firebase'
-import { PubSub } from 'graphql-subscriptions'
-
-const pubsub = new PubSub()
+import { pubsub } from '../firebase/pubsubber'
 const path : string = 'customers'
 const customerNotificationTopic = 'customerNotifications';
-let notifications = [{label: "YOLO"}]
+const notifications = [{label: "YOLO"}]
+const customers = [{name: "YOLO"}]
 
 const customerResolvers = {
     Query: {
         customer: (_, { _id } : { _id : string}) => getEntity(path, _id),
         customers: () => getEntities(path),
-        notifications: () => notifications
+        notifications: () => notifications,
+        livecustomers: () => customers
     },
     Mutation: {
         createCustomer: (_, args) => insertEntity(path, args),
@@ -36,6 +36,9 @@ const customerResolvers = {
     Subscription: {
         newNotification: {
             subscribe: () => pubsub.asyncIterator(customerNotificationTopic)
+        },
+        customers: {
+            subscribe: () => pubsub.asyncIterator('customers')
         }
     }
 }

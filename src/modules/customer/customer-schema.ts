@@ -9,7 +9,7 @@ const customersSchema =
     }
 
     type Customer {
-        _id: String!
+        _id: String
         businessId: String
         name: String
     }
@@ -18,6 +18,7 @@ const customersSchema =
         customer(_id: String!): Customer
         customers: [Customer]
         notifications: [Notification]
+        livecustomers: [Customer]
     }
 
     type Mutation {
@@ -41,6 +42,7 @@ const customersSchema =
 
     type Subscription {
         newNotification: Notification
+        customers: [Customer]
     }
 `
 

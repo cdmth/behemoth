@@ -1,5 +1,5 @@
 import * as admin from 'firebase-admin';
-
+import { pubsub } from './pubsubber'
 import { mapKeys } from 'lodash'
 require('dotenv').config()
 
@@ -31,8 +31,17 @@ admin.initializeApp({
 const listener = admin.database().ref("customers/")
 
 // Attach an asynchronous callback to read the data at our posts reference
-listener.on("value", function(snapshot) {
-  console.log("JEJEJEE", snapshot.val());
+listener.on("value", async function(snapshot) {
+
+  let entities = []
+
+  mapKeys(snapshot.val(), (value, key) => { 
+    value._id = key
+    entities.push(value)
+    return key + value
+  })
+
+  pubsub.publish('customers', {"customers": entities})
 }, function (errorObject) {
   console.log("The read failed: " + errorObject.code);
 });
