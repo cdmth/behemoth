@@ -16,6 +16,7 @@
   "dependencies": {
     "apollo-server-express": "^2.0.6",
     "body-parser": "^1.18.3",
+    "cors": "^2.8.4",
     "cross-env": "^5.2.0",
     "dotenv": "^6.0.0",
     "express": "^4.16.3",
@@ -23,9 +24,12 @@
     "firebase-admin": "^6.0.0",
     "graphql": "^14.0.2",
     "graphql-date": "^1.0.3",
+    "graphql-subscriptions": "^0.5.8",
     "graphql-tools": "^3.1.1",
+    "http": "^0.0.0",
     "merge-graphql-schemas": "^1.5.3",
-    "mongoose": "^5.2.14"
+    "mongoose": "^5.2.14",
+    "subscriptions-transport-ws": "^0.9.14"
   },
   "devDependencies": {
     "@types/body-parser": "^1.17.0",

@@ -28,6 +28,15 @@ admin.initializeApp({
   messagingSenderId: process.env.MESSAGINGSENDERID
 })
 
+const listener = admin.database().ref("customers/")
+
+// Attach an asynchronous callback to read the data at our posts reference
+listener.on("value", function(snapshot) {
+  console.log("JEJEJEE", snapshot.val());
+}, function (errorObject) {
+  console.log("The read failed: " + errorObject.code);
+});
+
 const mapSnapshotToEntities = snapshot => {
   let entities = []
 
@@ -41,6 +50,7 @@ const mapSnapshotToEntities = snapshot => {
 }
 
 const ref = (path: string) => admin.database().ref(path)
+
 const getValue = (path: string) => ref(path).once('value')
 
 const getEntity = async (path: string, id: string) => {

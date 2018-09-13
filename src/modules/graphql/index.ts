@@ -2,6 +2,8 @@ import { makeExecutableSchema } from 'graphql-tools'
 import { mergeTypes, mergeResolvers} from 'merge-graphql-schemas'
 import { ApolloServer } from 'apollo-server-express'
 
+import constants from '../../../config/constants'
+
 import customerSchema from '../customer/customer-schema' 
 import customerResolvers from '../customer/customer-resolvers'
 import entrySchema from '../entry/entry-schema'
@@ -24,6 +26,16 @@ const allResolvers = [
 const typeDefs = mergeTypes(allSchemas, { all: true })
 const resolvers = mergeResolvers(allResolvers, { all: true })
 
-const schema = makeExecutableSchema({ typeDefs, resolvers })
+export const schema = makeExecutableSchema({ 
+    typeDefs, 
+    resolvers,
+    //@ts-ignore
+    playground: {
+        endpoint: `http://localhost:3001/playground`,
+        settings: {
+          'editor.theme': 'light'
+        }
+      }
+})
 
 export const server = new ApolloServer({ schema })
