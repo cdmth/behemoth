@@ -83,7 +83,8 @@ const insertEntity = async (path: string, entity) => {
   try {
     const pusher = await ref(path).push(entity)
     const pushed = await pusher.ref.once('value')
-    return pushed.val()
+    let result = { _id: pushed.ref.path.pieces_[1]}
+    return Object.assign(result, pushed.val())
   } catch (error) {
     console.log(error)
   }
