@@ -1,4 +1,4 @@
-import { getEntity, getEntities, insertEntity, updateEntity, deleteEntity, customersWithProjects } from '../firebase'
+import { getEntity, getEntities, insertEntity, updateEntity, deleteEntity } from '../firebase'
 import Projects from '../project/project-resolvers'
 
 import { pubsub } from '../firebase/pubsubber'
@@ -10,8 +10,7 @@ const customerResolvers = {
     Query: {
         customer: (_, { _id } : { _id : string}) => getEntity(path, _id),
         customers: () => getEntities(path),
-        notifications: () => notifications,
-        customersWithProjects: () => customersWithProjects(path)
+        notifications: () => notifications
     },
     Customer: {
         projects: (customer) => {

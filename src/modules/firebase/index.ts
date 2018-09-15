@@ -64,21 +64,14 @@ listenerProjects.on("value", async function(snapshot) {
   console.log("The read failed: " + errorObject.code);
 });
 
-const mapSnapshotToEntities = (snapshot, filter) => {
+const mapSnapshotToEntities = snapshot => {
   let entities = []
 
+  // @ts-ignore
   mapKeys(snapshot.val(), (value, key) => {
-    value._id = key
-    if (filter) {
-      if (filter.has(key)) {
-        entities.push(value)
-      }
-    } else {
-      entities.push(value)
-    }
-    return key + value
+    entities.push(Object.assign({_id: key}, value))
   })
-
+  
   return entities
 }
 
@@ -97,7 +90,7 @@ const getEntity = async (path: string, id: string) => {
 
 const getEntities = (path: string) => {
   try {
-    return getValue(path).then(snap => mapSnapshotToEntities(snap, undefined))
+    return getValue(path).then(snap => mapSnapshotToEntities(snap))
   } catch (error) {
     console.log(error)
   }
@@ -105,22 +98,10 @@ const getEntities = (path: string) => {
 
 const getEntitiesByValue = (path: string, key: string, value: string) => {
   try {
-    return ref(path).orderByChild(key).equalTo(value).once('value').then(snap => mapSnapshotToEntities(snap, undefined))
+    return ref(path).orderByChild(key).equalTo(value).once('value').then(snapshot => mapSnapshotToEntities(snapshot))
   } catch (error) {
     console.log(error)
   }
-}
-
-const customersWithProjects = (path: string) => {
-  const customerIds = new Set()
-  ref('projects').orderByChild('customerId').once('value', snap => {
-    Object.values(snap.val()).forEach((value:any) => {
-      if (value.customerId) {
-        customerIds.add(value.customerId)
-      }
-    })
-  })
-  return ref(path).once('value').then(snapshot => mapSnapshotToEntities(snapshot, customerIds))
 }
 
 const insertEntity = async (path: string, entity) => {
@@ -136,13 +117,11 @@ const insertEntity = async (path: string, entity) => {
   }
 }
 
-const insertEntityToParent = (path: string, entity) => ref(path).parent.push(entity)
-
 const updateEntity = async (path: string, id: string, entity) => {
   await ref(path).child(id).update(entity)
   return getEntity(path, id)
 }
 const deleteEntity = (path: string, id: string) => ref(path).child(id).remove()
 
-export { customersWithProjects, getEntity, getEntities, insertEntity, updateEntity, deleteEntity, insertEntityToParent, getEntitiesByValue }
+export { getEntity, getEntities, insertEntity, updateEntity, deleteEntity, getEntitiesByValue }
 
