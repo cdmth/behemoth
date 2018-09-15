@@ -13,6 +13,7 @@ const projectSchema =
   type Query {
     project(_id: String!): Project
     projects: [Project]
+    projectsByCustomerId(customerId: String!): [Project]
   }
 
   type Mutation {

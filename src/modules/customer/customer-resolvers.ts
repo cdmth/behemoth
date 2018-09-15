@@ -1,4 +1,6 @@
 import { getEntity, getEntities, insertEntity, updateEntity, deleteEntity } from '../firebase'
+import Projects from '../project/project-resolvers'
+
 import { pubsub } from '../firebase/pubsubber'
 const path : string = 'customers'
 const customerNotificationTopic = 'customerNotifications';
@@ -9,6 +11,11 @@ const customerResolvers = {
         customer: (_, { _id } : { _id : string}) => getEntity(path, _id),
         customers: () => getEntities(path),
         notifications: () => notifications,
+    },
+    Customer: {
+        projects: (customer) => {
+            return Projects.Query.projectsByCustomerId("customerId", customer._id)
+        }
     },
     Mutation: {
         createCustomer: (_, args) => insertEntity(path, args),

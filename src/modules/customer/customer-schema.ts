@@ -12,6 +12,7 @@ const customersSchema =
         _id: String
         businessId: String
         name: String
+        projects: [Project]
     }
 
     type Query {

@@ -83,15 +83,23 @@ const getValue = (path: string) => ref(path).once('value')
 const getEntity = async (path: string, id: string) => {
   try {
     const getter = await ref(path).child(id).once('value')
-    return getter.val()
+    return Object.assign({_id: id}, getter.val())
   } catch (error) {
-    console.log("something went wrong")
+    console.log(error)
   }
 }
 
 const getEntities = (path: string) => {
   try {
     return getValue(path).then(mapSnapshotToEntities)
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const getEntitiesByValue = (path: string, key: string, value: string) => {
+  try {
+    return ref(path).orderByChild(key).equalTo(value).once('value').then(mapSnapshotToEntities)
   } catch (error) {
     console.log(error)
   }
@@ -118,5 +126,5 @@ const updateEntity = async (path: string, id: string, entity) => {
 }
 const deleteEntity = (path: string, id: string) => ref(path).child(id).remove()
 
-export { getEntity, getEntities, insertEntity, updateEntity, deleteEntity, insertEntityToParent }
+export { getEntity, getEntities, insertEntity, updateEntity, deleteEntity, insertEntityToParent, getEntitiesByValue }
 
