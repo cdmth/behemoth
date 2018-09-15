@@ -2,8 +2,6 @@ import { makeExecutableSchema } from 'graphql-tools'
 import { mergeTypes, mergeResolvers} from 'merge-graphql-schemas'
 import { ApolloServer } from 'apollo-server-express'
 
-import constants from '../../../config/constants'
-
 import customerSchema from '../customer/customer-schema' 
 import customerResolvers from '../customer/customer-resolvers'
 import entrySchema from '../entry/entry-schema'
