@@ -7,6 +7,7 @@ const projectSchema =
   type Project {
     _id: String
     name: String
+    customerId: String
   }
 
   type Query {
@@ -17,7 +18,7 @@ const projectSchema =
   type Mutation {
     createProject(
       name: String,
-      companyId: String
+      customerId: String!
     ): Project
 
     updateProject(
