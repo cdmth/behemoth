@@ -3,14 +3,12 @@ import { pubsub } from '../firebase/pubsubber'
 const path : string = 'customers'
 const customerNotificationTopic = 'customerNotifications';
 const notifications = [{label: "YOLO"}]
-const customers = [{name: "YOLO"}]
 
 const customerResolvers = {
     Query: {
         customer: (_, { _id } : { _id : string}) => getEntity(path, _id),
         customers: () => getEntities(path),
         notifications: () => notifications,
-        livecustomers: () => customers
     },
     Mutation: {
         createCustomer: (_, args) => insertEntity(path, args),

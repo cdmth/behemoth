@@ -1,4 +1,5 @@
 import { getEntity, getEntities, insertEntity, updateEntity, deleteEntity } from '../firebase'
+import { pubsub } from '../firebase/pubsubber'
 
 const path : string = 'projects'
 
@@ -19,6 +20,11 @@ const projectResolvers = {
             } catch (err) {
                 throw new Error(err)
             }
+        }
+    },
+    Subscription: {
+        projects: {
+            subscribe: () => pubsub.asyncIterator('projects')
         }
     }
 }

@@ -28,10 +28,10 @@ admin.initializeApp({
   messagingSenderId: process.env.MESSAGINGSENDERID
 })
 
-const listener = admin.database().ref("customers/")
+const listenerCustomer = admin.database().ref("customers/")
 
 // Attach an asynchronous callback to read the data at our posts reference
-listener.on("value", async function(snapshot) {
+listenerCustomer.on("value", async function(snapshot) {
 
   let entities = []
 
@@ -42,6 +42,24 @@ listener.on("value", async function(snapshot) {
   })
 
   pubsub.publish('customers', {"customers": entities})
+}, function (errorObject) {
+  console.log("The read failed: " + errorObject.code);
+});
+
+const listenerProjects = admin.database().ref("projects/")
+
+// Attach an asynchronous callback to read the data at our posts reference
+listenerProjects.on("value", async function(snapshot) {
+
+  let entities = []
+
+  mapKeys(snapshot.val(), (value, key) => { 
+    value._id = key
+    entities.push(value)
+    return key + value
+  })
+
+  pubsub.publish('projects', {"projects": entities})
 }, function (errorObject) {
   console.log("The read failed: " + errorObject.code);
 });
@@ -84,6 +102,8 @@ const insertEntity = async (path: string, entity) => {
     const pusher = await ref(path).push(entity)
     const pushed = await pusher.ref.once('value')
     let result = { _id: pushed.ref.path.pieces_[1]}
+
+    console.log(Object.assign(result, pushed.val()))
     return Object.assign(result, pushed.val())
   } catch (error) {
     console.log(error)

@@ -27,6 +27,10 @@ const projectSchema =
 
     deleteProject(_id: String!): Status
   }
+
+  type Subscription {
+    projects: [Project]
+}
 `
 
 export default projectSchema
