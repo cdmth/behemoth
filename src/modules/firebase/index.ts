@@ -64,12 +64,18 @@ listenerProjects.on("value", async function(snapshot) {
   console.log("The read failed: " + errorObject.code);
 });
 
-const mapSnapshotToEntities = snapshot => {
+const mapSnapshotToEntities = (snapshot, filter) => {
   let entities = []
 
-  mapKeys(snapshot.val(), (value, key) => { 
+  mapKeys(snapshot.val(), (value, key) => {
     value._id = key
-    entities.push(value)
+    if (filter) {
+      if (filter.has(key)) {
+        entities.push(value)
+      }
+    } else {
+      entities.push(value)
+    }
     return key + value
   })
 
@@ -91,7 +97,7 @@ const getEntity = async (path: string, id: string) => {
 
 const getEntities = (path: string) => {
   try {
-    return getValue(path).then(mapSnapshotToEntities)
+    return getValue(path).then(snap => mapSnapshotToEntities(snap, undefined))
   } catch (error) {
     console.log(error)
   }
@@ -99,10 +105,22 @@ const getEntities = (path: string) => {
 
 const getEntitiesByValue = (path: string, key: string, value: string) => {
   try {
-    return ref(path).orderByChild(key).equalTo(value).once('value').then(mapSnapshotToEntities)
+    return ref(path).orderByChild(key).equalTo(value).once('value').then(snap => mapSnapshotToEntities(snap, undefined))
   } catch (error) {
     console.log(error)
   }
+}
+
+const customersWithProjects = (path: string) => {
+  const customerIds = new Set()
+  ref('projects').orderByChild('customerId').once('value', snap => {
+    Object.values(snap.val()).forEach((value:any) => {
+      if (value.customerId) {
+        customerIds.add(value.customerId)
+      }
+    })
+  })
+  return ref(path).once('value').then(snapshot => mapSnapshotToEntities(snapshot, customerIds))
 }
 
 const insertEntity = async (path: string, entity) => {
@@ -126,5 +144,5 @@ const updateEntity = async (path: string, id: string, entity) => {
 }
 const deleteEntity = (path: string, id: string) => ref(path).child(id).remove()
 
-export { getEntity, getEntities, insertEntity, updateEntity, deleteEntity, insertEntityToParent, getEntitiesByValue }
+export { customersWithProjects, getEntity, getEntities, insertEntity, updateEntity, deleteEntity, insertEntityToParent, getEntitiesByValue }
 

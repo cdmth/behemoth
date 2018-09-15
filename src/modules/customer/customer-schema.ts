@@ -12,7 +12,7 @@ const customersSchema =
         _id: String
         businessId: String
         name: String
-        projects: [Project]
+        projects: [Project]!
     }
 
     type Query {
@@ -20,6 +20,7 @@ const customersSchema =
         customers: [Customer]
         notifications: [Notification]
         livecustomers: [Customer]
+        customersWithProjects: [Customer]
     }
 
     type Mutation {
