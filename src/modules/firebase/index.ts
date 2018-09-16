@@ -32,13 +32,11 @@ const listenerCustomer = admin.database().ref("customers/")
 
 // Attach an asynchronous callback to read the data at our posts reference
 listenerCustomer.on("value", async function(snapshot) {
-
   let entities = []
 
-  mapKeys(snapshot.val(), (value, key) => { 
-    value._id = key
-    entities.push(value)
-    return key + value
+  // @ts-ignore
+  mapKeys(snapshot.val(), (value, key) => {
+    entities.push(Object.assign({_id: key}, value))
   })
 
   pubsub.publish('customers', {"customers": entities})
@@ -50,13 +48,11 @@ const listenerProjects = admin.database().ref("projects/")
 
 // Attach an asynchronous callback to read the data at our posts reference
 listenerProjects.on("value", async function(snapshot) {
-
   let entities = []
 
-  mapKeys(snapshot.val(), (value, key) => { 
-    value._id = key
-    entities.push(value)
-    return key + value
+  // @ts-ignore
+  mapKeys(snapshot.val(), (value, key) => {
+    entities.push(Object.assign({_id: key}, value))
   })
 
   pubsub.publish('projects', {"projects": entities})
