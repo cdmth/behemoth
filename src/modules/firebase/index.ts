@@ -109,9 +109,10 @@ const insertEntity = async (path: string, entity) => {
     console.log(Object.assign(result, pushed.val()))
     return Object.assign(result, pushed.val())
   } catch (error) {
-    console.log(error)
+    console.log(error)  
   }
 }
+
 
 const updateEntity = async (path: string, id: string, entity) => {
   await ref(path).child(id).update(entity)
@@ -119,5 +120,30 @@ const updateEntity = async (path: string, id: string, entity) => {
 }
 const deleteEntity = (path: string, id: string) => ref(path).child(id).remove()
 
-export { getEntity, getEntities, insertEntity, updateEntity, deleteEntity, getEntitiesByValue }
+const getChildren = async (path: string, projectId: string) => {
+  let result = {
+    projectId: projectId,
+    workers: []
+  }
+
+  let entities = []
+
+  await ref(path + '/' + projectId).once('value', snapshot => {
+    Object.keys(snapshot.val()).forEach(key => {
+      entities.push({workerId: key, name: snapshot.val()[key]})
+    })    
+  })
+
+  result.workers = entities
+  return result
+}
+
+const insertChildEntity = async (path: string, key: string, entity) => {
+  try {
+    return ref(path).child(key).set(entity)
+  } catch (error) {
+    console.log(error)
+  }
+}
+export { getEntity, getEntities, insertEntity, updateEntity, deleteEntity, getEntitiesByValue, getChildren, insertChildEntity }
 
