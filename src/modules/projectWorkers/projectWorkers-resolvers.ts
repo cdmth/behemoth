@@ -7,8 +7,7 @@ const projectWorkersResolvers = {
         getWorkersByProjectId: (_, { projectId } : { projectId : string }) => getChildren(path, projectId),
     },
     Mutation: {
-        addWorkerToProject: (_, { workerId, name, projectId } : { workerId: string, name: string, projectId: string }) => 
-            insertChildEntity(path + '/' + projectId, workerId, name),
+        addWorkerToProject: (_, { workerId, name, projectId } : { workerId: string, name: string, projectId: string }) => insertChildEntity(path + '/' + projectId, workerId, name),
         removeWorkerFromProject: async (_, { workerId, projectId } : { workerId: string, projectId: string }) => {
             try {
                 await deleteEntity(path + '/' + projectId, workerId)

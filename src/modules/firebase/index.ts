@@ -28,6 +28,21 @@ admin.initializeApp({
   messagingSenderId: process.env.MESSAGINGSENDERID
 })
 
+const listenerWorker = admin.database().ref("workers/")
+
+listenerWorker.on("value", async function(snapshot) {
+  let entities = []
+
+  // @ts-ignore
+  mapKeys(snapshot.val(), (value, key) => {
+    entities.push(Object.assign({_id: key}, value))
+  })
+
+  pubsub.publish('workers', {"workers": entities})
+}, function (errorObject) {
+  console.log("The read failed: " + errorObject.code);
+});
+
 const listenerCustomer = admin.database().ref("customers/")
 
 // Attach an asynchronous callback to read the data at our posts reference
@@ -129,9 +144,11 @@ const getChildren = async (path: string, projectId: string) => {
   let entities = []
 
   await ref(path + '/' + projectId).once('value', snapshot => {
-    Object.keys(snapshot.val()).forEach(key => {
-      entities.push({workerId: key, name: snapshot.val()[key]})
-    })    
+    if(snapshot.val()) {
+      Object.keys(snapshot.val()).forEach(key => {
+        entities.push({workerId: key, name: snapshot.val()[key]})
+      })
+    }
   })
 
   result.workers = entities
@@ -139,11 +156,21 @@ const getChildren = async (path: string, projectId: string) => {
 }
 
 const insertChildEntity = async (path: string, key: string, entity) => {
+  console.log(key, entity)
   try {
     return ref(path).child(key).set(entity)
   } catch (error) {
     console.log(error)
   }
 }
-export { getEntity, getEntities, insertEntity, updateEntity, deleteEntity, getEntitiesByValue, getChildren, insertChildEntity }
+export { 
+  getEntity,
+  getEntities, 
+  insertEntity, 
+  updateEntity, 
+  deleteEntity, 
+  getEntitiesByValue, 
+  getChildren, 
+  insertChildEntity 
+}
 
