@@ -16,6 +16,7 @@ const entrySchema =
   type Query {
     entry(_id: String!): Entry
     entries: [Entry]
+    entriesByProjectId(projectId: String!): [Entry]
   } 
 
   type Mutation {
