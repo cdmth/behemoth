@@ -43,6 +43,21 @@ listenerWorker.on("value", async function(snapshot) {
   console.log("The read failed: " + errorObject.code);
 });
 
+const listenerProjectWorker = admin.database().ref("projectWorkers/")
+
+listenerProjectWorker.on("value", async function(snapshot) {
+  let entities = []
+
+  // @ts-ignore
+  mapKeys(snapshot.val(), (value, key) => {
+    entities.push(Object.assign({_id: key}, value))
+  })
+
+  pubsub.publish('projectWorkers', {"projectWorkers": entities})
+}, function (errorObject) {
+  console.log("The read failed: " + errorObject.code);
+})
+
 const listenerCustomer = admin.database().ref("customers/")
 
 // Attach an asynchronous callback to read the data at our posts reference

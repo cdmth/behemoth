@@ -29,6 +29,10 @@ const projectWorkersSchema = `
       projectId: String!
     ): Status
   }
+
+  type Subscription {
+    projectWorkers: [ProjectWorkers]
+  }
 `
 
 export default projectWorkersSchema

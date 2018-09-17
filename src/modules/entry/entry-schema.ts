@@ -7,6 +7,7 @@ const entrySchema =
   type Entry {
     _id: String
     projectId: String!
+    workerId: String!
     start: Int
     end: Int
     description: String
@@ -20,6 +21,7 @@ const entrySchema =
   type Mutation {
     createEntry(
       projectId: String!
+      workerId: String!
       start: Int
       end: Int
       description: String
@@ -27,6 +29,8 @@ const entrySchema =
 
     updateEntry(
       _id: String!
+      projectId: String
+      workerId: String
       startAt: String
       endAt: String
       description: String

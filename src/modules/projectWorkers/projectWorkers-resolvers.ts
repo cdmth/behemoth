@@ -1,4 +1,5 @@
 import { getEntity, insertEntity, insertChildEntity, deleteEntity, getChildren} from '../firebase'
+import { pubsub } from '../firebase/pubsubber'
 
 const path : string = 'projectWorkers'
 
@@ -17,6 +18,11 @@ const projectWorkersResolvers = {
             } catch (err) {
                 throw new Error(err)
             }
+        }
+    },
+    Subscription: {
+        projectWorkers: {
+            subscribe: () => pubsub.asyncIterator('projectWorkers')
         }
     }
 }
