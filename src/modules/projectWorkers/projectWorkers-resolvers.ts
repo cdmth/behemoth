@@ -1,14 +1,22 @@
-import { getEntity, insertEntity, insertChildEntity, deleteEntity, getChildren} from '../firebase'
+import { getWorkersByProjectId, setChildEntity, deleteEntity} from '../firebase'
 import { pubsub } from '../firebase/pubsubber'
 
 const path : string = 'projectWorkers'
 
 const projectWorkersResolvers = {
     Query: {
-        getWorkersByProjectId: (_, { projectId } : { projectId : string }) => getChildren(path, projectId),
+        getWorkersByProjectId: (_, { projectId } : { projectId : string }) => getWorkersByProjectId(path, projectId),
+    },
+    ProjectWorkers: {
+        workers: (fuck) => {
+           return fuck
+        }
     },
     Mutation: {
-        addWorkerToProject: (_, { workerId, name, projectId } : { workerId: string, name: string, projectId: string }) => insertChildEntity(path + '/' + projectId, workerId, name),
+        addWorkerToProject: (_, args) => {
+            const { projectId, workerId } = args
+            return setChildEntity(path + '/' + projectId, workerId, args)
+        },
         removeWorkerFromProject: async (_, { workerId, projectId } : { workerId: string, projectId: string }) => {
             try {
                 await deleteEntity(path + '/' + projectId, workerId)

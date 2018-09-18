@@ -28,68 +28,6 @@ admin.initializeApp({
   messagingSenderId: process.env.MESSAGINGSENDERID
 })
 
-const listenerWorker = admin.database().ref("workers/")
-
-listenerWorker.on("value", async function(snapshot) {
-  let entities = []
-
-  // @ts-ignore
-  mapKeys(snapshot.val(), (value, key) => {
-    entities.push(Object.assign({_id: key}, value))
-  })
-
-  pubsub.publish('workers', {"workers": entities})
-}, function (errorObject) {
-  console.log("The read failed: " + errorObject.code);
-});
-
-const listenerProjectWorker = admin.database().ref("projectWorkers/")
-
-listenerProjectWorker.on("value", async function(snapshot) {
-  let entities = []
-
-  // @ts-ignore
-  mapKeys(snapshot.val(), (value, key) => {
-    entities.push(Object.assign({_id: key}, value))
-  })
-
-  pubsub.publish('projectWorkers', {"projectWorkers": entities})
-}, function (errorObject) {
-  console.log("The read failed: " + errorObject.code);
-})
-
-const listenerCustomer = admin.database().ref("customers/")
-
-// Attach an asynchronous callback to read the data at our posts reference
-listenerCustomer.on("value", async function(snapshot) {
-  let entities = []
-
-  // @ts-ignore
-  mapKeys(snapshot.val(), (value, key) => {
-    entities.push(Object.assign({_id: key}, value))
-  })
-
-  pubsub.publish('customers', {"customers": entities})
-}, function (errorObject) {
-  console.log("The read failed: " + errorObject.code);
-});
-
-const listenerProjects = admin.database().ref("projects/")
-
-// Attach an asynchronous callback to read the data at our posts reference
-listenerProjects.on("value", async function(snapshot) {
-  let entities = []
-
-  // @ts-ignore
-  mapKeys(snapshot.val(), (value, key) => {
-    entities.push(Object.assign({_id: key}, value))
-  })
-
-  pubsub.publish('projects', {"projects": entities})
-}, function (errorObject) {
-  console.log("The read failed: " + errorObject.code);
-});
-
 const mapSnapshotToEntities = snapshot => {
   let entities = []
 
@@ -132,6 +70,7 @@ const getEntitiesByValue = (path: string, key: string, value: string) => {
 
 const insertEntity = async (path: string, entity) => {
   try {
+    console.log(path, entity)
     const pusher = await ref(path).push(entity)
     const pushed = await pusher.ref.once('value')
     let result = { _id: pushed.ref.path.pieces_[1]}
@@ -143,49 +82,79 @@ const insertEntity = async (path: string, entity) => {
   }
 }
 
-
 const updateEntity = async (path: string, id: string, entity) => {
   await ref(path).child(id).update(entity)
   return getEntity(path, id)
 }
+
 const deleteEntity = (path: string, id: string) => ref(path).child(id).remove()
 
-const getChildren = async (path: string, projectId: string) => {
-  let result = {
+const mapWorkersByProjectId = (snapshot) => {
+  let entities = []
+  
+  let snapshotVal = snapshot.val()
+
+  if (snapshotVal) {
+    Object.values(snapshot.val()).forEach(value => {
+      entities.push(value)
+    })
+  }
+  
+  return entities
+}
+
+const getWorkersByProjectId = async (path: string, projectId: string) => {
+  const result = {
     projectId: projectId,
     workers: []
   }
-
-  let entities = []
-
-  await ref(path + '/' + projectId).once('value', snapshot => {
-    if(snapshot.val()) {
-      Object.keys(snapshot.val()).forEach(key => {
-        entities.push({workerId: key, name: snapshot.val()[key]})
-      })
-    }
-  })
-
-  result.workers = entities
-  return result
+  const entities = await ref(path + '/' + projectId).once('value').then(snapshot => mapWorkersByProjectId(snapshot))
+  return result.workers = entities
 }
 
-const insertChildEntity = async (path: string, key: string, entity) => {
-  console.log(key, entity)
+const setChildEntity = async (path: string, child: string, entity) => {
   try {
-    return ref(path).child(key).set(entity)
+    await ref(path).child(child).set(entity)
+    return ref(path).child(child).once('value', snapshot => snapshot.val())
   } catch (error) {
     console.log(error)
   }
 }
+
+const getChildEntities = async (path:string) => {
+  try {
+    const entities = await ref(path).once('value').then(snapshot => mapSnapshotToEntities(snapshot))
+    return entities
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const createListenerWorker = (path:string) => {
+  const listener = ref(path + '/')
+  listener.on("value", async function(snapshot) {
+    let subscribeObject = {}
+    let entities = mapSnapshotToEntities(snapshot)
+    subscribeObject[path] = entities
+    pubsub.publish(path, subscribeObject)
+  }, function (errorObject) {
+    console.log("The read failed: " + errorObject.code);
+  })
+}
+
+createListenerWorker("workers")
+createListenerWorker("projectWorkers")
+createListenerWorker("customers")
+createListenerWorker("projects")
+
 export { 
   getEntity,
   getEntities, 
   insertEntity, 
   updateEntity, 
   deleteEntity, 
-  getEntitiesByValue, 
-  getChildren, 
-  insertChildEntity 
+  getEntitiesByValue,
+  setChildEntity,
+  getChildEntities,
+  getWorkersByProjectId
 }
-
