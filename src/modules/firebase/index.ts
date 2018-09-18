@@ -96,7 +96,7 @@ const mapRelationalEntities = (parentId, snapshot) => {
   }
   
   let snapshotVal = snapshot.val()
-  console.log(snapshotVal)
+  console.log('snapshotVal', snapshotVal)
   if (snapshotVal) {
     Object.keys(snapshotVal).forEach(key => {
         entities.children.push(Object.assign({childId: key}, snapshotVal[key]))
@@ -108,7 +108,7 @@ const mapRelationalEntities = (parentId, snapshot) => {
 }
 
 const getRelationalEntities =  async (path: string, parentId: string) => {
-  const entities = await ref(path + '/' + parentId).once('value')
+  const entities = await ref(path).once('value')
     .then(snapshot => mapRelationalEntities(parentId, snapshot))
   return entities
 }
@@ -168,6 +168,22 @@ const peformMultiPathUpdates = async (snapshot) => {
   }
 }
 
+const performMultiPathInsert = (snapshot) => {
+  const snapshotVal = snapshot.val()
+  const changedTable = snapshot.ref.path.pieces_[0]
+
+  if (changedTable === 'entries') {
+    let root = 'workerProjectEntries'
+    
+    const entryId = snapshot.key
+    const { workerId, projectId, ...rest} = snapshotVal
+    
+    let insertPath = `${root}/${workerId}/${projectId}/${entryId}`
+    ref(insertPath).set(rest)
+  }
+  
+}
+
 const createListenerWorker = (path:string) => {
   const listener = ref(path + '/')
   listener.on("value", async function(snapshot) {
@@ -181,12 +197,16 @@ const createListenerWorker = (path:string) => {
   listener.on("child_changed", snapshot => {
     peformMultiPathUpdates(snapshot)
   })
+  listener.on("child_added", snapshot => {
+    performMultiPathInsert(snapshot)
+  })
 }
 
 createListenerWorker("workers")
 createListenerWorker("projectWorkers")
 createListenerWorker("customers")
 createListenerWorker("projects")
+createListenerWorker("entries")
 
 export { 
   getEntity,

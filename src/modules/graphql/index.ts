@@ -12,13 +12,16 @@ import workerSchema from '../worker/worker-schema'
 import workerResolvers from '../worker/worker-resolvers'
 import projectWorkersSchema from '../projectWorkers/projectWorkers-schema'
 import projectWorkersResolers from '../projectWorkers/projectWorkers-resolvers'
+import workerProjectEntriesSchema from '../workerProjectEntries/workerProjectEntries-schema'
+import workerProjectEntriesResolvers from '../workerProjectEntries/workerProjectEntries-resolvers'
 
 const allSchemas = [
     customerSchema,
     entrySchema,
     projectSchema,
     workerSchema,
-    projectWorkersSchema
+    projectWorkersSchema,
+    workerProjectEntriesSchema
 ]
 
 const allResolvers = [
@@ -26,7 +29,8 @@ const allResolvers = [
     entryResolvers,
     projectResolvers,
     workerResolvers,
-    projectWorkersResolers
+    projectWorkersResolers,
+    workerProjectEntriesResolvers
 ]
 
 const typeDefs = mergeTypes(allSchemas, { all: true })
