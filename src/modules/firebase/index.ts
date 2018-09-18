@@ -89,28 +89,27 @@ const updateEntity = async (path: string, id: string, entity) => {
 
 const deleteEntity = (path: string, id: string) => ref(path).child(id).remove()
 
-const mapWorkersByProjectId = (snapshot) => {
-  let entities = []
+const mapRelationalEntities = (parentId, snapshot) => {
+  let entities = {
+    parentId: parentId,
+    children: []
+  }
   
   let snapshotVal = snapshot.val()
 
   if (snapshotVal) {
-    Object.values(snapshot.val()).forEach(value => {
-      entities.push(value)
-    })
+    Object.keys(snapshotVal).forEach(key => {
+        entities.children.push(Object.assign({childId: key}, snapshotVal[key]))
+      }
+    )
   }
   
   return entities
 }
 
-const getWorkersByProjectId =  async (path: string, projectId: string) => {
-  const result = {
-    projectId: projectId,
-    workers: []
-  }
-  const entities = await ref(path + '/' + projectId).once('value').then(snapshot => mapWorkersByProjectId(snapshot))
-  result.workers = entities
-  return result
+const getRelationalEntities =  async (path: string, parentId: string) => {
+  const entities = await ref(path + '/' + parentId).once('value').then(snapshot => mapRelationalEntities(parentId, snapshot))
+  return entities
 }
 
 const setChildEntity = async (path: string, child: string, entity) => {
@@ -157,5 +156,5 @@ export {
   getEntitiesByValue,
   setChildEntity,
   getChildEntities,
-  getWorkersByProjectId
+  getRelationalEntities
 }

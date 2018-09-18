@@ -1,11 +1,24 @@
-import { getWorkersByProjectId, setChildEntity, deleteEntity } from '../firebase'
+import { getRelationalEntities, setChildEntity, deleteEntity } from '../firebase'
 import { pubsub } from '../firebase/pubsubber'
 
 const path: string = 'projectWorkers'
 
 const projectWorkersResolvers = {
     Query: {
-        getWorkersByProjectId: (_, { projectId }: { projectId: string }) => getWorkersByProjectId(path, projectId),
+        getWorkersByProjectId: (_, { projectId }: { projectId: string }) => getRelationalEntities(path, projectId),
+    },
+    ProjectWorkers: {
+        projectId: (entities) => {
+            return entities.parentId
+        },
+        workers: (entities) => {
+            let workers = []
+            entities.children.forEach(child => {
+                const { workerId, ...rest } = child
+                workers.push(Object.assign({workerId: workerId}, rest))
+            })
+            return workers
+        }
     },
     Mutation: {
         addWorkerToProject: (_, args) => {
