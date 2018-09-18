@@ -133,6 +133,41 @@ const getChildEntities = async (path:string) => {
   }
 }
 
+const peformMultiPathUpdates = async (snapshot) => {
+  let updateObject = {}
+
+  const snapshotVal = snapshot.val()
+  const changedTable = snapshot.ref.path.pieces_[0]
+  const changedChildId = snapshot.ref.path.pieces_[1]
+
+  if (changedTable === 'workers') {
+    console.log('update worker relations')
+
+    // update path for projectWorkers 
+    let updatePath
+    let root = 'projectWorkers'
+
+    // @ts-ignore
+    await getValue('projectWorkers').then(pwSnap => {
+      // @ts-ignore
+      pwSnap.forEach(pSnap => {
+        const workerIdsOfProject = Object.keys(pSnap.val())
+        workerIdsOfProject.forEach(key => {
+          if (key === changedChildId) {
+            updatePath = `${root}/${pSnap.key}/${changedChildId}`
+            const changedParentFieldKeys = Object.keys(snapshotVal)
+            changedParentFieldKeys.forEach(changedParentField => {
+              updateObject[`${updatePath}/${changedParentField}`] = snapshotVal[changedParentField]
+            })
+          }
+        })
+      })
+    })
+    console.log('multiupdating with updateObject', updateObject)
+    admin.database().ref().update(updateObject)
+  }
+}
+
 const createListenerWorker = (path:string) => {
   const listener = ref(path + '/')
   listener.on("value", async function(snapshot) {
@@ -142,6 +177,9 @@ const createListenerWorker = (path:string) => {
     pubsub.publish(path, subscribeObject)
   }, function (errorObject) {
     console.log("The read failed: " + errorObject.code);
+  })
+  listener.on("child_changed", snapshot => {
+    peformMultiPathUpdates(snapshot)
   })
 }
 
