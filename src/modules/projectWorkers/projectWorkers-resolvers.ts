@@ -14,16 +14,16 @@ const projectWorkersResolvers = {
         workers: (entities) => {
             let workers = []
             entities.children.forEach(child => {
-                const { workerId, ...rest } = child
-                workers.push(Object.assign({workerId: workerId}, rest))
+                const { childId, ...rest } = child
+                workers.push(Object.assign({workerId: childId}, rest))
             })
             return workers
         }
     },
     Mutation: {
         addWorkerToProject: (_, args) => {
-            const { projectId, workerId } = args
-            return setChildEntity(path + '/' + projectId, workerId, args)
+            const { projectId, workerId, ...rest } = args
+            return setChildEntity(path, projectId, workerId, rest)
         },
         removeWorkerFromProject: async (_, { workerId, projectId }: { workerId: string, projectId: string }) => {
             try {

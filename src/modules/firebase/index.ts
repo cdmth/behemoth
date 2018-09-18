@@ -96,7 +96,7 @@ const mapRelationalEntities = (parentId, snapshot) => {
   }
   
   let snapshotVal = snapshot.val()
-
+  console.log(snapshotVal)
   if (snapshotVal) {
     Object.keys(snapshotVal).forEach(key => {
         entities.children.push(Object.assign({childId: key}, snapshotVal[key]))
@@ -108,14 +108,17 @@ const mapRelationalEntities = (parentId, snapshot) => {
 }
 
 const getRelationalEntities =  async (path: string, parentId: string) => {
-  const entities = await ref(path + '/' + parentId).once('value').then(snapshot => mapRelationalEntities(parentId, snapshot))
+  const entities = await ref(path + '/' + parentId).once('value')
+    .then(snapshot => mapRelationalEntities(parentId, snapshot))
   return entities
 }
 
-const setChildEntity = async (path: string, child: string, entity) => {
+const setChildEntity = async (path: string, parentId: string, childId: string, entity) => {
   try {
-    await ref(path).child(child).set(entity)
-    return ref(path).child(child).once('value', snapshot => snapshot.val())
+    const pathToParent = path + '/' + parentId
+    await ref(pathToParent).child(childId).set(entity)
+    return ref(pathToParent).once('value')
+      .then(snapshot => mapRelationalEntities(parentId, snapshot))
   } catch (error) {
     console.log(error)
   }
