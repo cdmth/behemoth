@@ -8,8 +8,9 @@ const entrySchema =
     _id: String
     projectId: String!
     workerId: String!
-    start: Int
-    end: Int
+    name: String
+    start: String
+    end: String
     description: String
 }
 
@@ -23,8 +24,9 @@ const entrySchema =
     createEntry(
       projectId: String!
       workerId: String!
-      start: Int
-      end: Int
+      name: String
+      start: String
+      end: String
       description: String
     ): Entry
 
@@ -32,8 +34,9 @@ const entrySchema =
       _id: String!
       projectId: String
       workerId: String
-      startAt: String
-      endAt: String
+      name: String
+      start: String
+      end: String
       description: String
     ): Entry
 

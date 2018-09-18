@@ -89,7 +89,7 @@ const updateEntity = async (path: string, id: string, entity) => {
 
 const deleteEntity = (path: string, id: string) => ref(path).child(id).remove()
 
-const mapRelationalEntities = (parentId, snapshot) => {
+const mapRelationalEntities = (parentId, snapshot, path = '') => {
   let entities = {
     parentId: parentId,
     children: []
@@ -97,11 +97,25 @@ const mapRelationalEntities = (parentId, snapshot) => {
   
   let snapshotVal = snapshot.val()
   console.log('snapshotVal', snapshotVal)
+
+
   if (snapshotVal) {
+    if(path === 'projectWorkers') {
+      Object.entries(snapshotVal[Object.keys(snapshotVal)[0]]).map((x) => {
+        //  @ts-ignore
+        return entities.children.push({workerId: x[0], name: x[1].name})
+      })
+
+// if (path === 'projectWorkers') {
+//     let projectId = Object.keys(snapshotVal)[0]
+//     Object.keys(snapshotVal[projectId]).forEach(key => {
+//       entities.children.push(Object.assign({workerId: key, name: snapshotVal[projectId][key].name}))
+//     })
+    } else {
     Object.keys(snapshotVal).forEach(key => {
         entities.children.push(Object.assign({childId: key}, snapshotVal[key]))
-      }
-    )
+      })
+    }
   }
   
   return entities
@@ -109,7 +123,7 @@ const mapRelationalEntities = (parentId, snapshot) => {
 
 const getRelationalEntities =  async (path: string, parentId: string) => {
   const entities = await ref(path).once('value')
-    .then(snapshot => mapRelationalEntities(parentId, snapshot))
+    .then(snapshot => mapRelationalEntities(parentId, snapshot, path))
   return entities
 }
 

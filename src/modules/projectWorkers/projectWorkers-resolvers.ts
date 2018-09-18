@@ -5,7 +5,10 @@ const path: string = 'projectWorkers'
 
 const projectWorkersResolvers = {
     Query: {
-        getWorkersByProjectId: (_, { projectId }: { projectId: string }) => getRelationalEntities(path, projectId),
+        getWorkersByProjectId: (_, { projectId }: { projectId: string }) => {
+            getRelationalEntities(path, projectId).then((res) => console.log("VASTAUS",res.children))
+            return getRelationalEntities(path, projectId)
+        },
     },
     ProjectWorkers: {
         projectId: (entities) => {
