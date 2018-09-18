@@ -9,8 +9,8 @@ const projectWorkersResolvers = {
     },
     Mutation: {
         addWorkerToProject: (_, args) => {
-            const { projectId, workerId, ...rest } = args
-            return setChildEntity(path + '/' + projectId, workerId, rest)
+            const { projectId, workerId } = args
+            return setChildEntity(path + '/' + projectId, workerId, args)
         },
         removeWorkerFromProject: async (_, { workerId, projectId }: { workerId: string, projectId: string }) => {
             try {

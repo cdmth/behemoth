@@ -103,13 +103,14 @@ const mapWorkersByProjectId = (snapshot) => {
   return entities
 }
 
-const getWorkersByProjectId = async (path: string, projectId: string) => {
+const getWorkersByProjectId =  async (path: string, projectId: string) => {
   const result = {
     projectId: projectId,
     workers: []
   }
   const entities = await ref(path + '/' + projectId).once('value').then(snapshot => mapWorkersByProjectId(snapshot))
-  return result.workers = entities
+  result.workers = entities
+  return result
 }
 
 const setChildEntity = async (path: string, child: string, entity) => {
