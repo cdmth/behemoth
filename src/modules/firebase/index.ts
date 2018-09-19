@@ -105,12 +105,6 @@ const mapRelationalEntities = (parentId, snapshot, path = '') => {
         //  @ts-ignore
         return entities.children.push({workerId: x[0], name: x[1].name})
       })
-
-// if (path === 'projectWorkers') {
-//     let projectId = Object.keys(snapshotVal)[0]
-//     Object.keys(snapshotVal[projectId]).forEach(key => {
-//       entities.children.push(Object.assign({workerId: key, name: snapshotVal[projectId][key].name}))
-//     })
     } else {
     Object.keys(snapshotVal).forEach(key => {
         entities.children.push(Object.assign({childId: key}, snapshotVal[key]))
