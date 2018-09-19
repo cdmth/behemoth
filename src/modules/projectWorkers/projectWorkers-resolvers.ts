@@ -1,34 +1,26 @@
-import { getRelationalEntities, setChildEntity, deleteEntity } from '../firebase'
+import { getEntities, setEntity, deleteEntity } from '../firebase'
 import { pubsub } from '../firebase/pubsubber'
 
 const path: string = 'projectWorkers'
 
 const projectWorkersResolvers = {
     Query: {
-        getWorkersByProjectId: (_, { projectId }: { projectId: string }) => {
-            getRelationalEntities(path, projectId).then((res) => console.log("VASTAUS",res.children))
-            return getRelationalEntities(path, projectId)
-        },
-    },
-    ProjectWorkers: {
-        projectId: (entities) => {
-            return entities.parentId
-        },
-        workers: (entities) => {
-            let workers = []
-            entities.children.forEach(child => {
-                const { childId, ...rest } = child
-                workers.push(Object.assign({workerId: childId}, rest))
+        getWorkersByProjectId: async (_, { projectId }: { projectId: string }) => {
+            const entities = await getEntities(`${path}/${projectId}`)
+            const workers = []
+            entities.forEach(entity => {
+                const { _id, ...rest} = entity
+                workers.push(Object.assign({workerId: _id}, rest))
             })
             return workers
-        }
+        },
     },
     Mutation: {
         addWorkerToProject: (_, args) => {
             const { projectId, workerId, ...rest } = args
-            return setChildEntity(path, projectId, workerId, rest)
+            return setEntity(`${path}/${projectId}/${workerId}`, rest)
         },
-        removeWorkerFromProject: async (_, { workerId, projectId }: { workerId: string, projectId: string }) => {
+        deleteWorkerFromProject: async (_, { workerId, projectId }: { workerId: string, projectId: string }) => {
             try {
                 await deleteEntity(path + '/' + projectId, workerId)
                 return {

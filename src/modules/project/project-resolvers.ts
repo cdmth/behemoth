@@ -1,4 +1,4 @@
-import { getEntity, getEntities, insertEntity, updateEntity, deleteEntity, getEntitiesByValue } from '../firebase'
+import { getEntity, getEntities, pushEntity, updateEntity, deleteEntity, getEntitiesByValue } from '../firebase'
 import { pubsub } from '../firebase/pubsubber'
 
 const path : string = 'projects'
@@ -7,10 +7,10 @@ const projectResolvers = {
     Query: {
         project: (_, { _id } : { _id : string }) => getEntity(path, _id),
         projects: () => getEntities(path),
-        projectsByCustomerId: (key:string, value:string) => getEntitiesByValue(path, key, value)
+        projectsByCustomerId: (id) => getEntitiesByValue(path, 'customerId', id)
     },
     Mutation: {
-        createProject: (_, args) => insertEntity(path, args),
+        createProject: (_, args) => pushEntity(path, args),
         updateProject: (_, { _id, ...rest }: { _id: string }) => updateEntity(path, _id, rest),
         deleteProject: async (_, { _id } : { _id: string }) => {
             try {

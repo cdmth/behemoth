@@ -8,30 +8,25 @@ const projectWorkersSchema = `
     name: String
   }
 
-  type ProjectWorkers {
-    projectId: String
-    workers: [ProjectWorker]
-  }
-
   type Query {
-    getWorkersByProjectId(projectId: String!): ProjectWorkers
+    getWorkersByProjectId(projectId: String!): [ProjectWorker]
   }
 
   type Mutation {
     addWorkerToProject(
       workerId: String!,
-      name: String, 
-      projectId: String!
-    ): ProjectWorkers
+      projectId: String!,
+      name: String
+    ): ProjectWorker
 
-    removeWorkerFromProject(
+    deleteWorkerFromProject(
       workerId: String!, 
       projectId: String!
     ): Status
   }
 
   type Subscription {
-    projectWorkers: [ProjectWorkers]
+    projectWorkers: [ProjectWorker]
   }
 `
 

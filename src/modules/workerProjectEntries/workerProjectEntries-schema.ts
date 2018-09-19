@@ -1,20 +1,20 @@
 const workerProjectEntriesSchema = `
-  type WorkerProjectEntries {
-    projectId: String
-    entries: [Entry]
+  type WorkerProjectEntry {
+    description: String,
+    end: String,
+    start: String
   }
 
   type Query {
-    getWorkerProjectEntries(workerId: String!, projectId: String!): WorkerProjectEntries
-    getWorkerProjectsEntries(workerId: String!): [WorkerProjectEntries]
+    getWorkerProjectEntries(workerId: String!, projectId: String!): [Entry]
   }
 
   type Mutation {
-    addWorkerProjectEntry(workerId: String!, projectId: String!, entryId: String!): WorkerProjectEntries
+    addWorkerProjectEntry(workerId: String!, projectId: String!, entryId: String!): WorkerProjectEntry
   }
 
   type Subscription {
-    workerProjectEntries: [WorkerProjectEntries]
+    workerProjectEntries: [Entry]
   }
 `
 

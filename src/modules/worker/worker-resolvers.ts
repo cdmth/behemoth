@@ -1,4 +1,4 @@
-import { getEntity, getEntities, insertEntity, updateEntity, deleteEntity, getEntitiesByValue } from '../firebase'
+import { getEntity, getEntities, pushEntity, updateEntity, deleteEntity, getEntitiesByValue } from '../firebase'
 import { pubsub } from '../firebase/pubsubber'
 
 const path : string = 'workers'
@@ -9,7 +9,7 @@ const workerResolvers = {
         workers: () => getEntities(path)
     },
     Mutation: {
-        createWorker: (_, args) => insertEntity(path, args),
+        createWorker: (_, args) => pushEntity(path, args),
         updateWorker: (_, { _id, ...rest }: { _id: string }) => updateEntity(path, _id, rest),
         deleteWorker: async (_, { _id } : { _id: string }) => {
             try {
