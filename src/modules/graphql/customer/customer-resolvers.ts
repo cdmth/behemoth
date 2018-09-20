@@ -1,7 +1,7 @@
-import { getEntity, getEntities, pushEntity, updateEntity, deleteEntity } from '../firebase'
+import { getEntity, getEntities, pushEntity, updateEntity, deleteEntity } from '../../firebase'
 import Projects from '../project/project-resolvers'
 
-import { pubsub } from '../firebase/pubsubber'
+import { pubsub } from '../../firebase/pubsubber'
 const path : string = 'customers'
 
 const customerResolvers = {

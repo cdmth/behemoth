@@ -72,6 +72,48 @@ const getEntitiesByValue = (path: string, key: string, value: string) => {
   }
 }
 
+/**
+ * retrieves entities between given start and end values.
+ * 
+ * startKey - field name for the start in firebase
+ * startValue - start of the range
+ * endKey - field name for the end in firebase
+ * endValue - end of the range
+ * options - pass in objects that contain key and value (ex. check field matches with request)
+ */
+const getEntitiesByValueAndTimeRange = async (path: string, startKey: string, startValue: string, endKey: string, endValue: string, ...options) => {
+  try {
+    let entities = []
+    
+    await ref(path).orderByChild(endKey).startAt(startValue).endAt(endValue).once('value').then(snapshot => {
+      // @ts-ignore
+      snapshot.forEach(child => {
+        let val = child.val()
+        // val[startKey] gets the start-value of the looked after entity (ex. entry start)
+        // compare the start value that it is after the query parameter startValue.
+        if (startValue <= val[startKey]) {
+          try {
+            options.forEach(option => {
+              const optionKey = Object.keys(option)[0]
+              const optionValue = Object.values(option)[0]
+              if (val[optionKey] !== optionValue) {
+                throw new Error('options are not passing')
+              }
+              entities.push(val)
+            })
+          } catch (error) {
+            // nothing to see here
+          }
+        }
+      })
+    })
+
+    return entities
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 const pushEntity = async (path: string, entity) => {
   try {
     const pusher = await ref(path).push(entity)
@@ -183,5 +225,6 @@ export {
   setEntity,
   updateEntity, 
   deleteEntity, 
-  getEntitiesByValue
+  getEntitiesByValue,
+  getEntitiesByValueAndTimeRange
 }

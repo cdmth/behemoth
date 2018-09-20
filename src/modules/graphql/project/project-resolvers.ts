@@ -1,5 +1,5 @@
-import { getEntity, getEntities, pushEntity, updateEntity, deleteEntity, getEntitiesByValue } from '../firebase'
-import { pubsub } from '../firebase/pubsubber'
+import { getEntity, getEntities, pushEntity, updateEntity, deleteEntity, getEntitiesByValue } from '../../firebase'
+import { pubsub } from '../../firebase/pubsubber'
 
 const path : string = 'projects'
 

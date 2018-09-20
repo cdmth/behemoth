@@ -2,18 +2,20 @@ import { makeExecutableSchema } from 'graphql-tools'
 import { mergeTypes, mergeResolvers} from 'merge-graphql-schemas'
 import { ApolloServer } from 'apollo-server-express'
 
-import customerSchema from '../customer/customer-schema' 
-import customerResolvers from '../customer/customer-resolvers'
-import entrySchema from '../entry/entry-schema'
-import entryResolvers from '../entry/entry-resolvers'
-import projectSchema from '../project/project-schema'
-import projectResolvers from '../project/project-resolvers'
-import workerSchema from '../worker/worker-schema'
-import workerResolvers from '../worker/worker-resolvers'
-import projectWorkersSchema from '../projectWorkers/projectWorkers-schema'
-import projectWorkersResolers from '../projectWorkers/projectWorkers-resolvers'
-import workerProjectEntriesSchema from '../workerProjectEntries/workerProjectEntries-schema'
-import workerProjectEntriesResolvers from '../workerProjectEntries/workerProjectEntries-resolvers'
+import customerSchema from './customer/customer-schema' 
+import customerResolvers from './customer/customer-resolvers'
+import entrySchema from './entry/entry-schema'
+import entryResolvers from './entry/entry-resolvers'
+import projectSchema from './project/project-schema'
+import projectResolvers from './project/project-resolvers'
+import workerSchema from './worker/worker-schema'
+import workerResolvers from './worker/worker-resolvers'
+import projectWorkersSchema from './projectWorkers/projectWorkers-schema'
+import projectWorkersResolers from './projectWorkers/projectWorkers-resolvers'
+import workerProjectEntriesSchema from './workerProjectEntries/workerProjectEntries-schema'
+import workerProjectEntriesResolvers from './workerProjectEntries/workerProjectEntries-resolvers'
+import billSchema from './bill/bill-schema'
+import billResolvers from './bill/bill-resolvers'
 
 const allSchemas = [
     customerSchema,
@@ -21,7 +23,8 @@ const allSchemas = [
     projectSchema,
     workerSchema,
     projectWorkersSchema,
-    workerProjectEntriesSchema
+    workerProjectEntriesSchema,
+    billSchema
 ]
 
 const allResolvers = [
@@ -30,7 +33,8 @@ const allResolvers = [
     projectResolvers,
     workerResolvers,
     projectWorkersResolers,
-    workerProjectEntriesResolvers
+    workerProjectEntriesResolvers,
+    billResolvers
 ]
 
 const typeDefs = mergeTypes(allSchemas, { all: true })

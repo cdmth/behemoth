@@ -1,4 +1,4 @@
-import { getEntity, getEntities, pushEntity, updateEntity, deleteEntity, getEntitiesByValue } from '../firebase'
+import { getEntity, getEntities, pushEntity, updateEntity, deleteEntity, getEntitiesByValue, getEntitiesByValueAndTimeRange } from '../../firebase'
 
 const path : string = 'entries'
 
@@ -6,7 +6,11 @@ const entryResolvers = {
     Query: {
         entry: (_, { _id } : { _id : string}) => getEntity(path, _id),
         entries: () => getEntities(path),
-        entriesByProjectId: (_, { projectId } : { projectId : string}) => getEntitiesByValue(path, 'projectId', projectId)
+        entriesByProjectId: (_, { projectId } : { projectId : string}) => {
+            console.log('projectId', projectId)
+            return getEntitiesByValue(path, 'projectId', projectId)
+        },
+        entriesByProjectIdAndTimeRange: (projectId, start, end) => getEntitiesByValueAndTimeRange(path, 'start', start, 'end', end, {'projectId': projectId})
     },
     Mutation: {
         createEntry: (_, args) => pushEntity(path, args),

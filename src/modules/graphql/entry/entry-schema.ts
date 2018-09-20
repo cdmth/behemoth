@@ -18,6 +18,7 @@ const entrySchema =
     entry(_id: String!): Entry
     entries: [Entry]
     entriesByProjectId(projectId: String!): [Entry]
+    entriesByProjectIdAndTimeRange(projectId: String!, start: String!, end: String!): [Entry]
   } 
 
   type Mutation {
