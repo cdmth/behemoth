@@ -218,6 +218,8 @@ createListenerWorker("customers")
 createListenerWorker("projects")
 createListenerWorker("entries")
 
+require('events').EventEmitter.prototype._maxListeners = 100;
+
 export { 
   getEntity,
   getEntities, 

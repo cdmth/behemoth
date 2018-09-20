@@ -1,4 +1,5 @@
 import { getEntity, getEntities, pushEntity, updateEntity, deleteEntity, getEntitiesByValue, getEntitiesByValueAndTimeRange } from '../../firebase'
+import { pubsub } from '../../firebase/pubsubber'
 
 const path : string = 'entries'
 
@@ -17,6 +18,8 @@ const entryResolvers = {
         updateEntry: (_, { _id, ...rest }: { _id: string }) => updateEntity(path, _id, rest),
         deleteEntry: async (_, { _id } : { _id: string }) => {
             try {
+                console.log(path, _id)
+                console.log("KYRPÄÄÄ")
                 await deleteEntity(path, _id)
                 return {
                     message: 'Entry deleted, id: ' + _id
@@ -24,6 +27,11 @@ const entryResolvers = {
             } catch (err) {
                 throw new Error(err)
             }
+        }
+    },
+    Subscription: {
+        entries: {
+            subscribe: () => pubsub.asyncIterator('entries')
         }
     }
 }

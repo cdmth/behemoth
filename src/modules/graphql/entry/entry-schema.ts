@@ -43,6 +43,10 @@ const entrySchema =
 
     deleteEntry(_id: String!): Status
   }
+
+  type Subscription {
+    entries: [Entry]
+}
 `
 
 export default entrySchema
