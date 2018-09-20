@@ -6,9 +6,11 @@ const billSchema = `
     billingPeriodStart: String!
     billingPeriodEnd: String!
     hours: Float
+    status: String
   }
 
   type Query {
+    getBill(billId: String!): Bill
     getBillsByCustomerId(customerId: String): [Bill]
   }
 

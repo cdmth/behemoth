@@ -1,12 +1,17 @@
 import * as moment from 'moment'
 
-import { getEntitiesByValue, pushEntity } from '../../firebase'
+import { getEntity, getEntitiesByValue, pushEntity } from '../../firebase'
 import Entries from '../entry/entry-resolvers'
 
 const path : string = 'bills'
 
 const billResolvers = {
     Query: {
+        getBill: async (billId) => {
+            const res = await getEntity(path, billId)
+            console.log(res)
+            return res
+        },
         getBillsByCustomerId: (_, { customerId } : { customerId: string }) => getEntitiesByValue(path, 'customerId', customerId)
     },
     Mutation: {
@@ -22,6 +27,7 @@ const billResolvers = {
           })
 
           args.hours = hours
+          args.status = 'draft'
 
           return pushEntity(path, args)
         }

@@ -12,7 +12,8 @@ const entrySchema =
     start: String
     end: String
     description: String
-}
+    bill: Bill
+  }
 
   type Query {
     entry(_id: String!): Entry
