@@ -6,6 +6,7 @@ const projectWorkersSchema = `
   type ProjectWorker {
     workerId: String
     name: String
+    price: Float
   }
 
   type Query {
