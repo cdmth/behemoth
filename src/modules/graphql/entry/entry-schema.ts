@@ -10,7 +10,6 @@ const entrySchema =
     workerId: String!
     start: String
     end: String
-    name: String
     description: String
     bill: Bill
     project: Project
@@ -29,7 +28,6 @@ const entrySchema =
     createEntry(
       projectId: String!
       workerId: String!
-      name: String
       start: String
       end: String
       description: String
