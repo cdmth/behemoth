@@ -1,31 +1,33 @@
 import { getEntity, getEntities, setEntity, pushEntity, updateEntity, deleteEntity, getEntitiesByValue, getEntitiesByValueAndTimeRange } from '../../firebase'
 import { pubsub } from '../../firebase/pubsubber'
 
-import Entries from '../entrybill/entrybill-resolvers'
+import Bills from '../bill/bill-resolvers'
+import Projects from '../project/project-resolvers'
+import Workers from '../worker/worker-resolvers'
 
 const path : string = 'entries'
 
 const entryResolvers = {
     Query: {
-        entry: (_, { _id } : { _id : string}) => getEntity(path, _id),
+        entry: (_, _id) => getEntity(path, _id),
         entries: () => getEntities(path),
-        entriesByProjectId: (_, { projectId } : { projectId : string}) => getEntitiesByValue(path, 'projectId', projectId),
+        entriesByProjectId: (projectId) => getEntitiesByValue(path, 'projectId', projectId),
+        entriesByWorkerId: (workerId) => getEntitiesByValue(path, 'workerId', workerId),
         entriesByProjectIdAndTimeRange: (projectId, start, end) => getEntitiesByValueAndTimeRange(path, 'start', start, 'end', end, {'projectId': projectId})
     },
     Entry: {
         bill: (entry) => {
-            console.log('entry', entry)
-            return Entries.Query.getBillByEntryId(entry._id)
+            return Bills.Query.bill(undefined, {_id: entry.billId})
+        },
+        project: (entry) => {
+            return Projects.Query.project(undefined, {_id: entry.projectId})
+        },
+        worker: (entry) => {
+            return Workers.Query.worker(undefined, {_id: entry.workerId })
         }
     },
     Mutation: {
-        createEntry: async (_, args) => {
-            console.log('args', args)
-            console.log('köpö', args._id)
-            const result = await pushEntity(path, args)
-            await setEntity(`entryBills/${result._id}`, {billId: ''})
-            return result 
-        },
+        createEntry: (_, args) => pushEntity(path, args),
         updateEntry: (_, { _id, ...rest }: { _id: string }) => updateEntity(path, _id, rest),
         deleteEntry: async (_, { _id } : { _id: string }) => {
             try {

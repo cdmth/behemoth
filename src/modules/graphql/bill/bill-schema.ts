@@ -10,8 +10,9 @@ const billSchema = `
   }
 
   type Query {
-    getBill(billId: String!): Bill
-    getBillsByCustomerId(customerId: String): [Bill]
+    bill(billId: String!): Bill
+    billsByCustomerId(customerId: String): [Bill]
+    billsByProjectId(projectId: String): [Bill]
   }
 
   type Mutation {

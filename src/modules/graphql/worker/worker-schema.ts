@@ -6,6 +6,8 @@ const workerSchema =`
   type Worker {
     _id: String
     name: String
+    projects: [Project]
+    entries: [Entry]
   }
 
   type Query {
@@ -19,7 +21,7 @@ const workerSchema =`
     ): Worker
 
     updateWorker(
-      _id: String!,
+      _id: String!
       name: String
     ): Worker
 

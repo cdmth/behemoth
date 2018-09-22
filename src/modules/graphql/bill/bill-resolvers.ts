@@ -7,12 +7,9 @@ const path : string = 'bills'
 
 const billResolvers = {
     Query: {
-        getBill: async (billId) => {
-            const res = await getEntity(path, billId)
-            console.log(res)
-            return res
-        },
-        getBillsByCustomerId: (_, { customerId } : { customerId: string }) => getEntitiesByValue(path, 'customerId', customerId)
+        bill: (_, billId) => getEntity(path, billId),
+        billsByCustomerId: (customerId) => getEntitiesByValue(path, 'customerId', customerId),
+        billsByProjectId: (projectId) => getEntitiesByValue(path, 'projectId', projectId)
     },
     Mutation: {
         createBill: async (_, args) => {

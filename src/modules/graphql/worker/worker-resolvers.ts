@@ -1,12 +1,23 @@
 import { getEntity, getEntities, pushEntity, updateEntity, deleteEntity } from '../../firebase'
 import { pubsub } from '../../firebase/pubsubber'
 
+import Entries from '../entry/entry-resolvers'
+import WorkerProjects from '../workerProjects/workerProjects-resolvers'
+
 const path : string = 'workers'
 
 const workerResolvers = {
     Query: {
-        worker: (_, { _id } : { _id : string }) => getEntity(path, _id),
+        worker: (_, args) => getEntity(path, args._id),
         workers: () => getEntities(path)
+    },
+    Worker: {
+        projects: (worker) => {
+            return WorkerProjects.Query.projectsByWorkerId(worker._id)
+        },
+        entries: (worker) => {
+            return Entries.Query.entriesByWorkerId(worker._id)
+        }
     },
     Mutation: {
         createWorker: (_, args) => pushEntity(path, args),

@@ -33,6 +33,8 @@ const ref = (path: string) => admin.database().ref(path)
 const getValue = (path: string) => ref(path).once('value')
 
 const getEntity = async (path: string, id: string) => {
+  console.log(path)
+  console.log('path, id', path, id)
   try {
     const snapshot = await ref(path).child(id).once('value')
     return Object.assign({_id: id}, snapshot.val())
@@ -43,8 +45,6 @@ const getEntity = async (path: string, id: string) => {
 
 const mapSnapshotToEntities = snapshot => {
   let entities = []
-
-  console.log(snapshot.val())
 
   if (snapshot.val()) {
     Object.keys(snapshot.val()).forEach(key => {
@@ -67,6 +67,25 @@ const getEntities = (path: string) => {
 const getEntitiesByValue = (path: string, key: string, value: string) => {
   try {
     return ref(path).orderByChild(key).equalTo(value).once('value').then(snapshot => mapSnapshotToEntities(snapshot))
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const getRelations = async (path: string) => {
+  try {
+    const relations = []
+    
+    const snapshot = await ref(path).once('value')
+    const value = snapshot.val()
+    
+    if (value) {
+      Object.keys(value).forEach(key => {
+        relations.push(key)
+      })
+    }
+
+    return relations
   } catch (error) {
     console.log(error)
   }
@@ -143,55 +162,12 @@ const updateEntity = async (path: string, id: string, entity) => {
 
 const deleteEntity = (path: string, id: string) => ref(path).child(id).remove()
 
-const peformMultiPathUpdates = async (snapshot) => {
-  let updateObject = {}
-
-  const snapshotVal = snapshot.val()
-  const changedTable = snapshot.ref.path.pieces_[0]
-  const changedChildId = snapshot.ref.path.pieces_[1]
-
-  if (changedTable === 'workers') {
-    console.log('update worker relations')
-
-    // update path for projectWorkers 
-    let updatePath
-    let root = 'projectWorkers'
-
-    // @ts-ignore
-    await getValue('projectWorkers').then(pwSnap => {
-      // @ts-ignore
-      pwSnap.forEach(pSnap => {
-        const workerIdsOfProject = Object.keys(pSnap.val())
-        workerIdsOfProject.forEach(key => {
-          if (key === changedChildId) {
-            updatePath = `${root}/${pSnap.key}/${changedChildId}`
-            const changedParentFieldKeys = Object.keys(snapshotVal)
-            changedParentFieldKeys.forEach(changedParentField => {
-              updateObject[`${updatePath}/${changedParentField}`] = snapshotVal[changedParentField]
-            })
-          }
-        })
-      })
-    })
-    console.log('multiupdating with updateObject', updateObject)
-    admin.database().ref().update(updateObject)
+const updateMultiPathEntity = async (entity) => {
+  try {
+    admin.database().ref().update(entity)
+  } catch (error) {
+    console.log(error)
   }
-}
-
-const performMultiPathInsert = (snapshot) => {
-  const snapshotVal = snapshot.val()
-  const changedTable = snapshot.ref.path.pieces_[0]
-
-  if (changedTable === 'entries') {
-    let root = 'workerProjectEntries'
-    
-    const entryId = snapshot.key
-    const { workerId, projectId, ...rest} = snapshotVal
-    
-    let insertPath = `${root}/${workerId}/${projectId}/${entryId}`
-    ref(insertPath).set(rest)
-  }
-  
 }
 
 const createListenerWorker = (path:string) => {
@@ -203,12 +179,6 @@ const createListenerWorker = (path:string) => {
     pubsub.publish(path, subscribeObject)
   }, function (errorObject) {
     console.log("The read failed: " + errorObject.code);
-  })
-  listener.on("child_changed", snapshot => {
-    peformMultiPathUpdates(snapshot)
-  })
-  listener.on("child_added", snapshot => {
-    performMultiPathInsert(snapshot)
   })
 }
 
@@ -228,5 +198,7 @@ export {
   updateEntity, 
   deleteEntity, 
   getEntitiesByValue,
-  getEntitiesByValueAndTimeRange
+  getEntitiesByValueAndTimeRange,
+  updateMultiPathEntity,
+  getRelations
 }

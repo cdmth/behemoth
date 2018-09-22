@@ -8,17 +8,19 @@ const entrySchema =
     _id: String
     projectId: String!
     workerId: String!
-    name: String
     start: String
     end: String
     description: String
     bill: Bill
+    project: Project
+    worker: Worker
   }
 
   type Query {
     entry(_id: String!): Entry
     entries: [Entry]
     entriesByProjectId(projectId: String!): [Entry]
+    entriesByWorkerId(workerId: String!): [Entry]
     entriesByProjectIdAndTimeRange(projectId: String!, start: String!, end: String!): [Entry]
   } 
 
@@ -26,7 +28,6 @@ const entrySchema =
     createEntry(
       projectId: String!
       workerId: String!
-      name: String
       start: String
       end: String
       description: String
@@ -36,7 +37,6 @@ const entrySchema =
       _id: String!
       projectId: String
       workerId: String
-      name: String
       start: String
       end: String
       description: String

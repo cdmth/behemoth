@@ -8,6 +8,9 @@ const projectSchema =
     _id: String
     name: String
     customerId: String
+    bills: [Bill]
+    entries: [Entry]
+    workers: [Worker]
   }
 
   type Query {
@@ -28,11 +31,21 @@ const projectSchema =
     ): Project
 
     deleteProject(_id: String!): Status
+
+    addWorkerToProject(
+      workerId: String!
+      projectId: String!
+    ): Status
+  
+    deleteWorkerFromProject(
+      workerId: String!
+      projectId: String!
+    ): Status
   }
 
   type Subscription {
     projects: [Project]
-}
+  }
 `
 
 export default projectSchema

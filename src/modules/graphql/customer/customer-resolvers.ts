@@ -1,17 +1,22 @@
 import { getEntity, getEntities, pushEntity, updateEntity, deleteEntity } from '../../firebase'
-import Projects from '../project/project-resolvers'
-
 import { pubsub } from '../../firebase/pubsubber'
+
+import Projects from '../project/project-resolvers'
+import Bills from '../bill/bill-resolvers'
+
 const path : string = 'customers'
 
 const customerResolvers = {
     Query: {
-        customer: (_, { _id } : { _id : string}) => getEntity(path, _id),
+        customer: (_, args) => getEntity(path, args._id),
         customers: () => getEntities(path)
     },
     Customer: {
         projects: (customer) => {
             return Projects.Query.projectsByCustomerId(customer._id)
+        },
+        bills: (customer) => {
+            return Bills.Query.billsByCustomerId(customer._id)
         }
     },
     Mutation: {
