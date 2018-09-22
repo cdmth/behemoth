@@ -10,7 +10,7 @@ const entrySchema =
     workerId: String!
     start: String
     end: String
-    name String
+    name: String
     description: String
     bill: Bill
     project: Project
