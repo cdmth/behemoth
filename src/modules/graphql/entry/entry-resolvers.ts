@@ -11,8 +11,8 @@ const entryResolvers = {
     Query: {
         entry: (_, _id) => getEntity(path, _id),
         entries: () => getEntities(path),
-        entriesByProjectId: (projectId) => getEntitiesByValue(path, 'projectId', projectId),
-        entriesByWorkerId: (workerId) => getEntitiesByValue(path, 'workerId', workerId),
+        entriesByProjectId: (_, args) => getEntitiesByValue(path, 'projectId', args.projectId),
+        entriesByWorkerId: (_, args) => getEntitiesByValue(path, 'workerId', args.workerId),
         entriesByProjectIdAndTimeRange: (projectId, start, end) => getEntitiesByValueAndTimeRange(path, 'start', start, 'end', end, {'projectId': projectId})
     },
     Entry: {
