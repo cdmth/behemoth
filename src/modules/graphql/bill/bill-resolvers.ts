@@ -1,6 +1,6 @@
 import * as moment from 'moment'
 
-import { getEntity, getEntitiesByValue, pushEntity } from '../../firebase'
+import { getEntity, getEntitiesByValue, pushEntity, getEntities } from '../../firebase'
 import Entries from '../entry/entry-resolvers'
 
 const path : string = 'bills'
@@ -12,7 +12,8 @@ const billResolvers = {
             console.log(res)
             return res
         },
-        getBillsByCustomerId: (_, { customerId } : { customerId: string }) => getEntitiesByValue(path, 'customerId', customerId)
+        getBillsByCustomerId: (_, { customerId } : { customerId: string }) => getEntitiesByValue(path, 'customerId', customerId),
+        getBills: () => getEntities(path)
     },
     Mutation: {
         createBill: async (_, args) => {

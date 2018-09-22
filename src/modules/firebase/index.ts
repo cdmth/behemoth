@@ -44,8 +44,6 @@ const getEntity = async (path: string, id: string) => {
 const mapSnapshotToEntities = snapshot => {
   let entities = []
 
-  console.log(snapshot.val())
-
   if (snapshot.val()) {
     Object.keys(snapshot.val()).forEach(key => {
       entities.push(Object.assign({_id: key}, snapshot.val()[key]))

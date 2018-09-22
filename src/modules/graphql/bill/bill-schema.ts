@@ -6,12 +6,14 @@ const billSchema = `
     billingPeriodStart: String!
     billingPeriodEnd: String!
     hours: Float
+    sum: Float
     status: String
   }
 
   type Query {
     getBill(billId: String!): Bill
     getBillsByCustomerId(customerId: String): [Bill]
+    getBills: [Bill]
   }
 
   type Mutation {
