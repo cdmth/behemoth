@@ -7,7 +7,7 @@ const path : string = 'bills'
 
 const billResolvers = {
     Query: {
-        bill: (_, billId) => getEntity(path, billId),
+        bill: (_, args) => getEntity(path, args.billId),
         billsByCustomerId: (customerId) => getEntitiesByValue(path, 'customerId', customerId),
         billsByProjectId: (projectId) => getEntitiesByValue(path, 'projectId', projectId),
         bills: () => getEntities(path)
