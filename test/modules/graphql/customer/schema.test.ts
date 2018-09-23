@@ -4,11 +4,13 @@ import {
   mockServer
 } from 'graphql-tools'
 
-import Faker from 'faker'
+import { graphql } from 'graphql'
+
+import CustomersSchema from '../../../../src/modules/graphql/customer/customer-schema'
 
 const fakeCustomer = {
-  name: Faker::Company.name,
-  businessId: Faker::Company.swedish_organisation_number
+  name: "Hurja Oy",
+  businessId: "0376872-8"
 }
 
 const createCustomer = {
@@ -45,7 +47,7 @@ describe('Schema', () => {
   // Array of case types
   const cases = [createCustomer]
   
-  const mockSchema = makeExecutableSchema({ typeDefs })
+  const mockSchema = makeExecutableSchema({ typeDefs: CustomersSchema })
 
   // Here we specify the return payloads of mocked types
   addMockFunctionsToSchema({
@@ -61,18 +63,18 @@ describe('Schema', () => {
 
   test('has valid type definitions', async () => {
     expect(async () => {
-      const MockServer = mockServer(typeDefs)
+      const MockServer = mockServer(mockSchema, {})
 
       await MockServer.query(`{ __schema { types { name } } }`)
     }).not.toThrow()
   })
 
   cases.forEach(obj => {
-    const { id, query, variables, context: ctx, expected } = obj
+    const { id, mutation, variables, context: ctx, expected } = obj
 
-    test(`query: ${id}`, async () => {
+    test(`mutation: ${id}`, async () => {
       return await expect(
-        graphql(mockSchema, query, null, { ctx }, variables)
+        graphql(mockSchema, mutation, null, { ctx }, variables)
       ).resolves.toEqual(expected)
     })
   })

@@ -12,8 +12,6 @@ import workerSchema from './worker/worker-schema'
 import workerResolvers from './worker/worker-resolvers'
 import projectWorkersSchema from './projectWorkers/projectWorkers-schema'
 import projectWorkersResolers from './projectWorkers/projectWorkers-resolvers'
-import workerProjectEntriesSchema from './workerProjectEntries/workerProjectEntries-schema'
-import workerProjectEntriesResolvers from './workerProjectEntries/workerProjectEntries-resolvers'
 import billSchema from './bill/bill-schema'
 import billResolvers from './bill/bill-resolvers'
 
@@ -23,7 +21,6 @@ const allSchemas = [
     projectSchema,
     workerSchema,
     projectWorkersSchema,
-    workerProjectEntriesSchema,
     billSchema
 ]
 
@@ -33,7 +30,6 @@ const allResolvers = [
     projectResolvers,
     workerResolvers,
     projectWorkersResolers,
-    workerProjectEntriesResolvers,
     billResolvers
 ]
 
