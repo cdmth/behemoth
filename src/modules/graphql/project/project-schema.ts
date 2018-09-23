@@ -35,6 +35,7 @@ const projectSchema =
     addWorkerToProject(
       workerId: String!
       projectId: String!
+      rate: Float
     ): Status
   
     deleteWorkerFromProject(

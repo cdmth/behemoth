@@ -6,6 +6,7 @@ const workerSchema =`
   type Worker {
     _id: String
     name: String
+    rate: Float
     projects: [Project]
     entries: [Entry]
   }

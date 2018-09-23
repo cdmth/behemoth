@@ -11,6 +11,7 @@ const entrySchema =
     start: String
     end: String
     description: String
+    price: Float
     bill: Bill
     project: Project
     worker: Worker

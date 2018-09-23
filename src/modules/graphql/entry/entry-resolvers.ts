@@ -1,9 +1,12 @@
+import * as moment from 'moment'
+
 import { getEntity, getEntities, setEntity, pushEntity, updateEntity, deleteEntity, getEntitiesByValue, getEntitiesByValueAndTimeRange } from '../../firebase'
 import { pubsub } from '../../firebase/pubsubber'
 
 import Bills from '../bill/bill-resolvers'
 import Projects from '../project/project-resolvers'
 import Workers from '../worker/worker-resolvers'
+import ProjectWorkers from '../projectWorkers/projectWorkers-resolvers'
 
 const path : string = 'entries'
 
@@ -27,7 +30,14 @@ const entryResolvers = {
         }
     },
     Mutation: {
-        createEntry: (_, args) => pushEntity(path, args),
+        createEntry: (_, args) => {
+            ProjectWorkers.Query.workerByProjectAndWorkerId(args.projectId, args.workerId).then(worker => {
+                const start = moment(args.start)
+                const end = moment(args.end)
+                const price = worker.rate * moment.duration(end.diff(start)).asHours()
+                pushEntity(path, Object.assign({price: price}, args))
+            })
+        },
         updateEntry: (_, { _id, ...rest }: { _id: string }) => updateEntity(path, _id, rest),
         deleteEntry: async (_, { _id } : { _id: string }) => {
             try {

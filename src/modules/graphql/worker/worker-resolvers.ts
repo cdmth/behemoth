@@ -16,7 +16,7 @@ const workerResolvers = {
             return WorkerProjects.Query.projectsByWorkerId(worker._id)
         },
         entries: (worker) => {
-            return Entries.Query.entriesByWorkerId(worker._id)
+            return Entries.Query.entriesByWorkerId(undefined, {workerId: worker._id})
         }
     },
     Mutation: {

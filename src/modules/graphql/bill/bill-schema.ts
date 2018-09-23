@@ -6,7 +6,7 @@ const billSchema = `
     billingPeriodStart: String!
     billingPeriodEnd: String!
     hours: Float
-    sum: Float
+    price: Float
     status: String
   }
 

@@ -2,7 +2,6 @@ import * as moment from 'moment'
 
 import { getEntity, getEntitiesByValue, pushEntity, getEntities } from '../../firebase'
 import Entries from '../entry/entry-resolvers'
-import ProjectWorkers from '../projectWorkers/projectWorkers-resolvers'
 
 const path : string = 'bills'
 
@@ -16,6 +15,7 @@ const billResolvers = {
     Mutation: {
         createBill: async (_, args) => {
           let hours = 0
+          let price = 0
           let workers = []
           
           // Get Entries by project ID
@@ -26,8 +26,9 @@ const billResolvers = {
             const end = moment(entry.end)
             hours += moment.duration(end.diff(start)).asHours()
 
-            // Get Workers by worker ID
+            price += entry.price
 
+            // Get Workers by worker ID
             if(workers.indexOf(entry.workerId) === -1) {
                 workers.push(entry.workerId)
             }
@@ -38,6 +39,7 @@ const billResolvers = {
 
 
           args.hours = hours
+          args.price = price
           args.status = 'draft'
 
           return pushEntity(path, args)

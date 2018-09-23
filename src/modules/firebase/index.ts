@@ -73,16 +73,16 @@ const getEntitiesByValue = (path: string, key: string, value: string) => {
 const getRelations = async (path: string) => {
   try {
     const relations = []
-    
+
     const snapshot = await ref(path).once('value')
     const value = snapshot.val()
-    
+  
     if (value) {
       Object.keys(value).forEach(key => {
-        relations.push(key)
+        relations.push(Object.assign({_id: key}, value[key]))
       })
     }
-
+    
     return relations
   } catch (error) {
     console.log(error)

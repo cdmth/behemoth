@@ -23,7 +23,7 @@ const projectResolvers = {
             return Entries.Query.entriesByProjectId(undefined, project._id)
         },
         workers: (project) => {
-            return ProjectWorkers.Query.workersByProjectId(project._id)
+            return ProjectWorkers.Query.workersByProjectId(undefined, {projectId: project._id})
         }
     },
     Mutation: {
@@ -41,9 +41,9 @@ const projectResolvers = {
         },
         addWorkerToProject: async (_, args) => {
             let updateObject = {}
-            const { projectId, workerId } = args
-            updateObject[`${projectWorkersPath}/${projectId}/${workerId}`] = true
-            updateObject[`${workerProjectsPath}/${workerId}/${projectId}`] = true
+            const { projectId, workerId, rate } = args
+            updateObject[`${projectWorkersPath}/${projectId}/${workerId}`] = {rate: rate}
+            updateObject[`${workerProjectsPath}/${workerId}/${projectId}`] = {rate: rate}
             await updateMultiPathEntity(updateObject)
             return {
                 message: 'Worker added to project'
