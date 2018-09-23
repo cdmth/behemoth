@@ -33,8 +33,6 @@ const ref = (path: string) => admin.database().ref(path)
 const getValue = (path: string) => ref(path).once('value')
 
 const getEntity = async (path: string, id: string) => {
-  console.log(path)
-  console.log('path, id', path, id)
   try {
     const snapshot = await ref(path).child(id).once('value')
     return Object.assign({_id: id}, snapshot.val())
