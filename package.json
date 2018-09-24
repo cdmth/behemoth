@@ -11,7 +11,7 @@
     "compile": "cross-env NODE_ENV=development tsc --watch",
     "nodemon": "cross-env NODE_ENV=development nodemon ./build/src/app.js --watch build",
     "start": "node ./build/app.js",
-    "test": "jest --forceExit --coverage --verbose"
+    "test": "jest --forceExit --coverage --verbose --detectOpenHandles --timers fake"
   },
   "dependencies": {
     "apollo-server-express": "^2.0.6",
@@ -20,6 +20,7 @@
     "cross-env": "^5.2.0",
     "dotenv": "^6.0.0",
     "express": "^4.16.3",
+    "express-graphql": "^0.6.12",
     "firebase": "^5.4.2",
     "firebase-admin": "^6.0.0",
     "graphql": "^14.0.2",

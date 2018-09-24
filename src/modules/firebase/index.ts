@@ -1,4 +1,4 @@
-import * as admin from 'firebase-admin';
+import * as admin from 'firebase-admin'
 import { pubsub } from './pubsubber'
 
 require('dotenv').config()

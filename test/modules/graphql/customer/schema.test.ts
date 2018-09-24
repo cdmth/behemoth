@@ -1,80 +1,69 @@
-import {
-  makeExecutableSchema,
-  addMockFunctionsToSchema,
-  mockServer
-} from 'graphql-tools'
-
+import { typeDefs } from '../../../../src/modules/graphql'
+import { makeExecutableSchema, addMockFunctionsToSchema, mockServer } from 'graphql-tools'
 import { graphql } from 'graphql'
 
-import CustomersSchema from '../../../../src/modules/graphql/customer/customer-schema'
+// @ts-ignore 
+global.typeDefs = typeDefs
 
-const fakeCustomer = {
-  name: "Hurja Oy",
-  businessId: "0376872-8"
-}
-
-const createCustomer = {
-  id: `Creates new Customer named ${fakeCustomer.name}`,
-  mutation: `
-    createCustomer(name: "${fakeCustomer.name}", businessId: "${fakeCustomer.businessId}") {
-      _id: String
-      businessId: String
-      name: String
-      projects: {
-        _id
-      }
-      bills: {
-        _id
+const queryOneCustomer = {
+  id: 'Query One Customers',
+  query: `
+    query {
+      customer (_id:"customer") {
+          name
       }
     }
   `,
-  variables: { name: fakeCustomer.name, businessId: fakeCustomer.businessId },
+  variables: { },
   context: { },
-  expected: {
-    data: {
-      createCustomer: {
-        _id: "-LN2717wikALPrXtzS6E",
-        businessId: fakeCustomer.businessId,
-        name: fakeCustomer.name,
-        projects: [],
-        bills: []
+  expected: { data: { customer: { name: 'Dog' } } }
+}
+
+const queryAllCustomers = {
+  id: 'Query All Customers',
+  query: `
+    query {
+      customers {
+          name
       }
     }
-  }
+  `,
+  variables: { },
+  context: { },
+  expected: { data: { customers: [{ name: 'Dog' }, { name: 'Dog' }] } }
+}
+
+const mocks = {
+  Boolean: () => false,
+  ID: () => '1',
+  Int: () => 1,
+  Float: () => 12.34,
+  String: () => 'Dog',
 }
 
 describe('Schema', () => {
-  // Array of case types
-  const cases = [createCustomer]
+  const cases = [queryOneCustomer, queryAllCustomers]
   
-  const mockSchema = makeExecutableSchema({ typeDefs: CustomersSchema })
+  const mockSchema = makeExecutableSchema({ typeDefs })
 
-  // Here we specify the return payloads of mocked types
   addMockFunctionsToSchema({
     schema: mockSchema,
-    mocks: {
-      Boolean: () => false,
-      ID: () => '1',
-      Int: () => 1,
-      Float: () => 12.34,
-      String: () => 'Dog',
-    }
+    mocks: mocks 
   })
 
   test('has valid type definitions', async () => {
     expect(async () => {
-      const MockServer = mockServer(mockSchema, {})
-
-      await MockServer.query(`{ __schema { types { name } } }`)
+      const MockServer = mockServer(typeDefs, mocks);
+      await MockServer.query(`{ __schema { types { name } } }`);
     }).not.toThrow()
   })
 
   cases.forEach(obj => {
-    const { id, mutation, variables, context: ctx, expected } = obj
+    const { id, query, variables, context: ctx, expected } = obj;
 
-    test(`mutation: ${id}`, async () => {
+    test(`query: ${id}`, async () => {
       return await expect(
-        graphql(mockSchema, mutation, null, { ctx }, variables)
+        graphql(mockSchema, query, null, { ctx }, variables)
       ).resolves.toEqual(expected)
     })
   })

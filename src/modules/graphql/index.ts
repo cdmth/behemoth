@@ -33,7 +33,7 @@ const allResolvers = [
     billResolvers
 ]
 
-const typeDefs = mergeTypes(allSchemas, { all: true })
+export const typeDefs = mergeTypes(allSchemas, { all: true })
 const resolvers = mergeResolvers(allResolvers, { all: true })
 
 export const schema = makeExecutableSchema({ 
