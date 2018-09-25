@@ -106,6 +106,7 @@ const getEntitiesByValueAndTimeRange = async (path: string, startKey: string, st
       // @ts-ignore
       snapshot.forEach(child => {
         let val = child.val()
+        let key = child.key
         // val[startKey] gets the start-value of the looked after entity (ex. entry start)
         // compare the start value that it is after the query parameter startValue.
         if (startValue <= val[startKey]) {
@@ -116,7 +117,8 @@ const getEntitiesByValueAndTimeRange = async (path: string, startKey: string, st
               if (val[optionKey] !== optionValue) {
                 throw new Error('options are not passing')
               }
-              entities.push(val)
+              const entity = Object.assign({_id: key}, val)
+              entities.push(entity)
             })
           } catch (error) {
             // nothing to see here

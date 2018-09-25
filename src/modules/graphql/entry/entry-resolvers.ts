@@ -16,11 +16,12 @@ const entryResolvers = {
         entries: () => getEntities(path),
         entriesByProjectId: (_, args) => getEntitiesByValue(path, 'projectId', args.projectId),
         entriesByWorkerId: (_, args) => getEntitiesByValue(path, 'workerId', args.workerId),
+        entriesByBillId: (_, args) => getEntitiesByValue(path, 'billId', args.billId),
         entriesByProjectIdAndTimeRange: (projectId, start, end) => getEntitiesByValueAndTimeRange(path, 'start', start, 'end', end, {'projectId': projectId})
     },
     Entry: {
         bill: (entry) => {
-            return Bills.Query.bill(undefined, {_id: entry.billId})
+            return Bills.Query.bill(undefined, {billId: entry.billId})
         },
         project: (entry) => {
             return Projects.Query.project(undefined, {_id: entry.projectId})

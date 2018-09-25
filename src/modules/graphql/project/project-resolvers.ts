@@ -20,7 +20,7 @@ const projectResolvers = {
             return Bills.Query.billsByProjectId(project._id)
         },
         entries: (project) => {
-            return Entries.Query.entriesByProjectId(undefined, project._id)
+            return Entries.Query.entriesByProjectId(undefined, {projectId: project._id})
         },
         workers: (project) => {
             return ProjectWorkers.Query.workersByProjectId(undefined, {projectId: project._id})

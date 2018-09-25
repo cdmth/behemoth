@@ -8,6 +8,7 @@ const billSchema = `
     hours: Float
     price: Float
     status: String
+    entries: [Entry]
   }
 
   type Query {

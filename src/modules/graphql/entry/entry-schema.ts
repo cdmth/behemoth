@@ -22,6 +22,7 @@ const entrySchema =
     entries: [Entry]
     entriesByProjectId(projectId: String!): [Entry]
     entriesByWorkerId(workerId: String!): [Entry]
+    entriesByBillId(billId: String!): [Entry]
     entriesByProjectIdAndTimeRange(projectId: String!, start: String!, end: String!): [Entry]
   } 
 
