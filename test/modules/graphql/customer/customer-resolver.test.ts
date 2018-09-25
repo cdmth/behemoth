@@ -2,7 +2,7 @@ import * as firebase from '../../../../src/modules/firebase'
 
 import customerResolvers from '../../../../src/modules/graphql/customer/customer-resolvers'
 
-describe('Customer mutations', () => {
+describe('Customer queries and mutations', () => {
   
   const obj = {}
   const resultMock  = { _id: '1234', name: 'Dog', businessId: 'Cat' }
