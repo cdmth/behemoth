@@ -1,7 +1,7 @@
 import { typeDefs } from '../../../../src/modules/graphql'
-import { makeExecutableSchema, addMockFunctionsToSchema, mockServer } from 'graphql-tools'
+import { makeExecutableSchema, addMockFunctionsToSchema } from 'graphql-tools'
 import { graphql } from 'graphql'
-import { project, mocks } from '../index.test'
+import { project, mocks } from '../test-data'
 
 const projectsQuery = `
 query {
@@ -31,7 +31,6 @@ const queryAllProjects = {
 
 describe('Testing Project queries against schema', () => {
   const cases = [queryAllProjects]
-
   const mockSchema = makeExecutableSchema({ typeDefs })
 
   addMockFunctionsToSchema({

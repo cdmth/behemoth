@@ -31,8 +31,8 @@ describe('Project queries and mutations', () => {
       return [resultMock, resultMock]
     })
 
-    // @ts-ignore
-    firebase.pushEntity = jest.fn((path, entity) => {
+     // @ts-ignore
+     firebase.pushEntity = jest.fn((path, entity) => {
       return Object.assign({_id: '1234'}, entity)
     })
 
@@ -88,7 +88,7 @@ describe('Project queries and mutations', () => {
     expect(firebase.updateMultiPathEntity.mock.calls[0][0]).toEqual(workerAddedResultMock)
     expect(result).resolves.toMatchObject({message: 'Worker added to project'})
   })
-  
+
   test('remove worker from project', () => {
     const args = { workerId: '4321', projectId: '1234' }
     const result = projectResolvers.Mutation.deleteWorkerFromProject(obj, args)
