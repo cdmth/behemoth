@@ -1,10 +1,10 @@
 import * as firebase from '../../../../src/modules/firebase'
-
 import projectResolvers from '../../../../src/modules/graphql/project/project-resolvers'
+import { testId, testString, testString2, testId2 } from '../test-data'
 
 describe('Project queries and mutations', () => {
   const obj = {}
-  const resultMock = {_id: '1234', name: 'Dog'}
+  const resultMock = {_id: testId, name: testString}
 
   const workerAddedResultMock = {
     'projectWorkers/1234/4321': {
@@ -33,7 +33,7 @@ describe('Project queries and mutations', () => {
 
      // @ts-ignore
      firebase.pushEntity = jest.fn((path, entity) => {
-      return Object.assign({_id: '1234'}, entity)
+      return Object.assign({_id: testId}, entity)
     })
 
     // @ts-ignore
@@ -53,7 +53,7 @@ describe('Project queries and mutations', () => {
   })
 
   test('query project', () => {
-    const args = { _id: '1234' }
+    const args = { _id: testId }
     const result = projectResolvers.Query.project(obj, args)
     expect(result).toMatchObject(resultMock)
   })
@@ -64,25 +64,25 @@ describe('Project queries and mutations', () => {
   })
 
   test('create project', () => {
-    const args = { name: 'Dog', businessId: 'Cat'}
+    const args = { name: testString, businessId: testString2}
     const result = projectResolvers.Mutation.createProject(obj, args)
     expect(result).toMatchObject(resultMock)
   })
 
   test('update project', () => {
-    const args = { _id: '1234', name: 'Dog', businessId: 'Cat'}
+    const args = { _id: testId, name: testString, businessId: testString2}
     const result = projectResolvers.Mutation.updateProject(obj, args)
     expect(result).toMatchObject(resultMock)
   })
 
   test('delete customer', () => {
-    const args = { _id: '1234'}
+    const args = { _id: testId}
     const result = projectResolvers.Mutation.deleteProject(obj, args)
     expect(result).resolves.toMatchObject({message: 'Project deleted, id: ' + args._id})
   })
 
   test('add worker to project', () => {
-    const args = { projectId: '1234', workerId: '4321', rate: '100' }
+    const args = { projectId: testId, workerId: testId2, rate: '100' }
     const result = projectResolvers.Mutation.addWorkerToProject(obj, args)
     // @ts-ignore
     expect(firebase.updateMultiPathEntity.mock.calls[0][0]).toEqual(workerAddedResultMock)
@@ -90,7 +90,7 @@ describe('Project queries and mutations', () => {
   })
 
   test('remove worker from project', () => {
-    const args = { workerId: '4321', projectId: '1234' }
+    const args = { workerId: testId2, projectId: testId }
     const result = projectResolvers.Mutation.deleteWorkerFromProject(obj, args)
     // @ts-ignore
     expect(firebase.updateMultiPathEntity.mock.calls[1][0]).toEqual(workerRemovedResultMock)

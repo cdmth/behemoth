@@ -1,36 +1,35 @@
 import { typeDefs } from '../../../../src/modules/graphql'
 import { makeExecutableSchema, addMockFunctionsToSchema } from 'graphql-tools'
 import { graphql } from 'graphql'
-import { project, mocks } from '../test-data'
+import { entry, mocks } from '../test-data'
 
-const projectsQuery = `
+const entriessQuery = `
 query {
-  projects {
-    name
-    customerId
-    bills {
+  entries {
+    description
+    bill {
       hours
     }
-    entries {
-      description
+    project {
+      name
     }
-    workers {
+    worker {
       name
     }
   }
 }
 `
 
-const queryAllProjects = {
-  id: 'Query all projects',
-  query: projectsQuery,
+const queryAllEntries = {
+  id: 'Query all entries',
+  query: entriessQuery,
   variables: { },
   context: { },
-  expected: { data: { projects: [project, project] } }
+  expected: { data: { entries: [entry, entry] } }
 }
 
-describe('Testing Project queries against schema', () => {
-  const cases = [queryAllProjects]
+describe('Testing Entry queries against schema', () => {
+  const cases = [queryAllEntries]
   const mockSchema = makeExecutableSchema({ typeDefs })
 
   addMockFunctionsToSchema({
