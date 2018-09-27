@@ -32,13 +32,12 @@ const entryResolvers = {
   },
   Mutation: {
     createEntry: (_, args) => {
-      return ProjectWorkers.Query.workerByProjectAndWorkerId(args.projectId, args.workerId)//.then(worker => {
-        //return worker
-        //const start = moment(args.start)
-        //const end = moment(args.end)
-        //const price = worker.rate * moment.duration(end.diff(start)).asHours()
-        //pushEntity(path, Object.assign({ price: price }, args))
-      //})
+      return ProjectWorkers.Query.workerByProjectAndWorkerId(args.projectId, args.workerId).then(worker => {  
+        const start = moment(args.start)
+        const end = moment(args.end)
+        const price = worker.rate * moment.duration(end.diff(start)).asHours()
+        pushEntity(path, Object.assign({ price: price }, args))
+      })
     },
     updateEntry: (_, { _id, ...rest }: { _id: string }) => updateEntity(path, _id, rest),
     deleteEntry: async (_, { _id }: { _id: string }) => {
