@@ -30,18 +30,20 @@ const billResolvers = {
       const query = await Entries.Query.entriesByProjectIdAndTimeRange(args.projectId, args.billingPeriodStart, args.billingPeriodEnd)
 
       query.forEach(entry => {
-        const start = moment(entry.start)
-        const end = moment(entry.end)
+        if (!entry.bill) { 
+          const start = moment(entry.start)
+          const end = moment(entry.end)
 
-        hours += moment.duration(end.diff(start)).asHours()
-        price += entry.price
+          hours += moment.duration(end.diff(start)).asHours()
+          price += entry.price
 
-        // Get Workers by worker ID
-        if (workers.indexOf(entry.workerId) === -1) {
-          workers.push(entry.workerId)
+          // Get Workers by worker ID
+          if (workers.indexOf(entry.workerId) === -1) {
+            workers.push(entry.workerId)
+          }
+
+          entries.push(entry)
         }
-
-        entries.push(entry)
       })
 
       // Get Worker salary
