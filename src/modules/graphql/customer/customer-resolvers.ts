@@ -8,7 +8,10 @@ const path : string = 'customers'
 
 const customerResolvers = {
     Query: {
-        customer: (_, args) => getEntity(path, args._id),
+        customer: (_, args, ctx) => {
+            console.log(ctx)
+            return getEntity(path, args._id)
+        },
         customers: () => getEntities(path)
     },
     Customer: {

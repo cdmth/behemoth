@@ -14,6 +14,8 @@ import projectWorkersSchema from './projectWorkers/projectWorkers-schema'
 import projectWorkersResolers from './projectWorkers/projectWorkers-resolvers'
 import billSchema from './bill/bill-schema'
 import billResolvers from './bill/bill-resolvers'
+import loginSchema from './login/login-schema'
+import loginResolvers from './login/login-resolvers'
 
 const allSchemas = [
     customerSchema,
@@ -21,7 +23,8 @@ const allSchemas = [
     projectSchema,
     workerSchema,
     projectWorkersSchema,
-    billSchema
+    billSchema,
+    loginSchema
 ]
 
 const allResolvers = [
@@ -30,7 +33,8 @@ const allResolvers = [
     projectResolvers,
     workerResolvers,
     projectWorkersResolers,
-    billResolvers
+    billResolvers,
+    loginResolvers
 ]
 
 export const typeDefs = mergeTypes(allSchemas, { all: true })

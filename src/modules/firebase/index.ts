@@ -1,4 +1,5 @@
 import * as admin from 'firebase-admin'
+import * as firebase from 'firebase'
 import { pubsub } from './pubsubber'
 
 require('dotenv').config()
@@ -17,6 +18,18 @@ const serviceAccount = {
 }
 
 admin.initializeApp({
+  //@ts-ignore
+  credential: admin.credential.cert(serviceAccount),
+  //@ts-ignore
+  apiKey: process.env.APIKEY,
+  authDomain: process.env.AUTHDOMAIN,
+  databaseURL: process.env.DATABASEURL,
+  projectId: process.env.PROJECTID,
+  storageBucket: process.env.STORAGEBUCKET,
+  messagingSenderId: process.env.MESSAGINGSENDERID
+})
+
+firebase.initializeApp({
   //@ts-ignore
   credential: admin.credential.cert(serviceAccount),
   //@ts-ignore
@@ -170,6 +183,28 @@ const updateMultiPathEntity = async (entity) => {
   }
 }
 
+const createAccount = async (args) => {
+  const { email, password } = args
+  try {
+    const userCredentials = await firebase.auth().createUserWithEmailAndPassword(email, password)
+    const token = await userCredentials.user.getIdToken()
+    return {token}
+  } catch(error) {
+    console.log('oops', error)
+  }
+} 
+
+const login = async (args) => {
+  const { email, password } = args
+  try {
+    const userCredentials = await firebase.auth().signInWithEmailAndPassword(email, password)
+    const token = await userCredentials.user.getIdToken()
+    return {token}
+  } catch(error) {
+    console.log('oops', error)
+  }
+}
+
 const createListenerWorker = (path:string) => {
   const listener = ref(path + '/')
   listener.on("value", async function(snapshot) {
@@ -200,5 +235,7 @@ export {
   getEntitiesByValue,
   getEntitiesByValueAndTimeRange,
   updateMultiPathEntity,
-  getRelations
+  getRelations,
+  createAccount,
+  login
 }
