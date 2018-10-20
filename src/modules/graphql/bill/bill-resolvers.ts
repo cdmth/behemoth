@@ -1,71 +1,114 @@
-import * as moment from 'moment'
+import * as moment from "moment";
 
-import { getEntity, getEntitiesByValue, pushEntity, getEntities, updateMultiPathEntity } from '../../firebase'
-import Entries from '../entry/entry-resolvers'
+import {
+  getEntity,
+  getEntitiesByValue,
+  pushEntity,
+  getEntities,
+  updateMultiPathEntity,
+  getEntitiesByValueNotExisting
+} from "../../firebase";
+import Entries from "../entry/entry-resolvers";
+import Projects from "../project/project-resolvers";
+import Customers from "../customer/customer-resolvers";
+import { SDK_VERSION } from "firebase";
 
-const path: string = 'bills'
-const entryPath: string = 'entries'
+const path: string = "bills";
+const entryPath: string = "entries";
 
 const billResolvers = {
   Query: {
     bill: (_, args) => getEntity(path, args.billId),
-    billsByCustomerId: (customerId) => getEntitiesByValue(path, 'customerId', customerId),
-    billsByProjectId: (projectId) => getEntitiesByValue(path, 'projectId', projectId),
-    bills: () => getEntities(path)
+    billsByCustomerId: customerId =>
+      getEntitiesByValue(path, "customerId", customerId),
+    billsByProjectId: projectId =>
+      getEntitiesByValue(path, "projectId", projectId),
+    bills: () => getEntities(path),
+    unbilledEntriesInProjects: async () => {
+      let entries = await getEntitiesByValueNotExisting('entries', 'billId')
+
+      // Find unique project IDs
+      let projectIds = []
+
+      entries.forEach(entry => {
+        if(!projectIds.includes(entry.projectId)) {
+          projectIds.push(entry.projectId)
+        }
+      })
+
+      let unbilledObject = await Promise.all(projectIds.map( async (project) => {
+        let filteredEntries = entries.filter(entry => entry.projectId === project)
+        return {
+          project: await Projects.Query.project(undefined, { _id: project }),
+          entries: filteredEntries
+        }
+      }))
+
+      return unbilledObject
+    }
   },
   Bill: {
-    entries: (bill) => {
-      return Entries.Query.entriesByBillId(undefined, {billId: bill._id})
+    entries: bill => {
+      return Entries.Query.entriesByBillId(undefined, { billId: bill._id });
+    },
+    project: bill => {
+      return Projects.Query.project(undefined, { _id: bill.projectId });
+    },
+    customer: bill => {
+      return Customers.Query.customer(undefined, { _id: bill.customerId }, undefined);
     }
   },
   Mutation: {
     createBill: async (_, args) => {
-      const entries = []
+      const entries = [];
 
-      let hours = 0
-      let price = 0
-      let workers = []
+      let hours = 0;
+      let price = 0;
+      let workers = [];
 
       // Get Entries by project ID
-      const query = await Entries.Query.entriesByProjectIdAndTimeRange(args.projectId, args.billingPeriodStart, args.billingPeriodEnd)
+      const query = await Entries.Query.entriesByProjectIdAndTimeRange(
+        undefined,
+        { ...args, start: args.billingPeriodStart, end: args.billingPeriodEnd }
+      );
 
       query.forEach(entry => {
-        if (!entry.bill) { 
-          const start = moment(entry.start)
-          const end = moment(entry.end)
+        if (!entry.billId) {
+          const start = moment(entry.start);
+          const end = moment(entry.end);
 
-          hours += moment.duration(end.diff(start)).asHours()
-          price += entry.price
+          hours += moment.duration(end.diff(start)).asHours();
+          price += entry.price;
 
           // Get Workers by worker ID
           if (workers.indexOf(entry.workerId) === -1) {
-            workers.push(entry.workerId)
+            workers.push(entry.workerId);
           }
 
-          entries.push(entry)
+          entries.push(entry);
         }
-      })
+      });
 
       // Get Worker salary
       // const projectWorkers = await ProjectWorkers.Query.getWorkersByProjectId(_, args.projectId)
 
+      args.hours = hours;
+      args.price = price;
+      args.status = "draft";
+      args.billDate = moment().toISOString()
 
-      args.hours = hours
-      args.price = price
-      args.status = 'draft'
-
-      const updateObject = {}
+      const updateObject = {};
 
       // create new bill and then add relation that entries belong to given bill
       await pushEntity(path, args).then(bill => {
         entries.forEach(entry => {
-          updateObject[`${entryPath}/${entry._id}/billId`] = bill._id
-        })
-      })
-      
-      return updateMultiPathEntity(updateObject)
+          updateObject[`${entryPath}/${entry._id}/billId`] = bill._id;
+        });
+      });
+
+      return updateMultiPathEntity(updateObject);
     }
   }
-}
+};
 
-export default billResolvers
+export default billResolvers;

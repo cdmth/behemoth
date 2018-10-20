@@ -17,7 +17,10 @@ const entryResolvers = {
     entriesByProjectId: (_, args) => getEntitiesByValue(path, 'projectId', args.projectId),
     entriesByWorkerId: (_, args) => getEntitiesByValue(path, 'workerId', args.workerId),
     entriesByBillId: (_, args) => getEntitiesByValue(path, 'billId', args.billId),
-    entriesByProjectIdAndTimeRange: (projectId, start, end) => getEntitiesByValueAndTimeRange(path, 'start', start, 'end', end, { 'projectId': projectId })
+    entriesByProjectIdAndTimeRange: (_, {projectId, start, end}) => {
+      console.log("ENTRY ARGS:", projectId, start, end)
+      return getEntitiesByValueAndTimeRange(path, 'start', start, 'end', end, { 'projectId': projectId })
+    }
   },
   Entry: {
     bill: (entry) => {

@@ -83,6 +83,26 @@ const getEntitiesByValue = (path: string, key: string, value: string) => {
   }
 }
 
+const getEntitiesByValueNotExisting = async (path: string, key: string) => {
+  let entries = []
+
+  try {
+    let query = ref(path).orderByKey()
+    const once = await query.once("value")
+
+    once.forEach(function(entry) : any {
+      if(!entry.val()[key]) {
+        let returnEntry = Object.assign(entry.val(), {_id: entry.key})
+        entries.push(returnEntry)
+      }
+    })
+
+    return entries
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 const getRelations = async (path: string) => {
   try {
     const relations = []
@@ -237,5 +257,6 @@ export {
   updateMultiPathEntity,
   getRelations,
   createAccount,
-  login
+  login,
+  getEntitiesByValueNotExisting
 }

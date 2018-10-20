@@ -9,6 +9,14 @@ const billSchema = `
     price: Float
     status: String
     entries: [Entry]
+    project: Project
+    customer: Customer
+    billDate: String
+  }
+
+  type Unbilled {
+    project: Project
+    entries: [Entry]
   }
 
   type Query {
@@ -16,6 +24,7 @@ const billSchema = `
     billsByCustomerId(customerId: String): [Bill]
     billsByProjectId(projectId: String): [Bill]
     bills: [Bill]
+    unbilledEntriesInProjects: [Unbilled]
   }
 
   type Mutation {
