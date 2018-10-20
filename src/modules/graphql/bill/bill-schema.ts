@@ -29,6 +29,8 @@ const billSchema = `
 
   type Mutation {
     createBill(customerId: String!, projectId: String!, billingPeriodStart: String!, billingPeriodEnd: String!): Bill
+    createBillFromUnbilled(projectId: String!): Bill
+    deleteBill(_id: String!): Bill
   }
 `
 

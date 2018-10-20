@@ -193,7 +193,9 @@ const updateEntity = async (path: string, id: string, entity) => {
   return getEntity(path, id)
 }
 
-const deleteEntity = (path: string, id: string) => ref(path).child(id).remove()
+const deleteEntity = (path: string, id: string) => {
+  console.log("DELETE_PATH", path, id)
+  ref(path).child(id).remove()}
 
 const updateMultiPathEntity = async (entity) => {
   try {

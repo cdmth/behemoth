@@ -10,6 +10,7 @@ const entrySchema =
     workerId: String!
     start: String
     end: String
+    billId: String
     description: String
     price: Float
     bill: Bill
