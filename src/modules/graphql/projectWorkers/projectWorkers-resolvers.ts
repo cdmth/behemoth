@@ -1,5 +1,5 @@
 import { pubsub } from '../../firebase/pubsubber'
-import { getEntity, getRelations } from '../../firebase'
+import { getEntity, getRelations, updateEntity } from '../../firebase'
 import Worker from '../worker/worker-resolvers'
 
 const path: string = 'projectWorkers'
@@ -16,6 +16,9 @@ const projectWorkersResolvers = {
                 })
         },
         workerByProjectAndWorkerId: async (projectId, workerId) => getEntity(`${path}/${projectId}`, workerId)
+    },
+    Mutation: {
+        updateProjectWorker: (_, { projectId, workerId, ...rest }) => updateEntity(`${path}/${projectId}`, workerId, rest),
     },
     Subscription: {
         projectWorkers: {

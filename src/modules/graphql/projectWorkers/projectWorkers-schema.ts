@@ -10,6 +10,10 @@ const projectWorkersSchema = `
     workerByProjectAndWorkerId(projectId: String!, workerId: String!) : ProjectWorker
   }
 
+  type Mutation {
+    updateProjectWorker(projectId: String!, workerId: String!, rate: String): [ProjectWorker]
+  }
+
   type Subscription {
     projectWorkers: [ProjectWorker]
   }
