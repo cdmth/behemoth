@@ -167,6 +167,7 @@ const getEntitiesByValueAndTimeRange = async (path: string, startKey: string, st
 }
 
 const pushEntity = async (path: string, entity) => {
+  console.log(entity)
   try {
     const pusher = await ref(path).push(entity)
     const pushed = await pusher.ref.once('value')

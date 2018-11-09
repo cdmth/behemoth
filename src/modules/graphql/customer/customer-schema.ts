@@ -8,6 +8,10 @@ const customersSchema =
         _id: String
         businessId: String
         name: String
+        address: String
+        postalCode: String
+        city: String
+        country: String
         projects: [Project]
         bills: [Bill]
     }
@@ -21,12 +25,20 @@ const customersSchema =
         createCustomer(
             businessId: String
             name: String
+            address: String
+            postalCode: String
+            city: String
+            country: String
         ): Customer
 
         updateCustomer(
             _id: String!
             businessId: String
             name: String
+            address: String
+            postalCode: String
+            city: String
+            country: String
         ): Customer
 
         deleteCustomer(_id: String!): Status

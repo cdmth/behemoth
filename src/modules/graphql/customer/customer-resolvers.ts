@@ -22,7 +22,9 @@ const customerResolvers = {
         }
     },
     Mutation: {
-        createCustomer: (_, args) => pushEntity(path, args),
+        createCustomer: (_, args) => {
+            console.log(args)
+            return pushEntity(path, args)},
         updateCustomer: (_, { _id, ...rest }: { _id: string }) => updateEntity(path, _id, rest),
         deleteCustomer: async (_, { _id } : { _id: string }) => {
             try {

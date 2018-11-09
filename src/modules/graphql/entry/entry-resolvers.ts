@@ -30,7 +30,7 @@ const entryResolvers = {
       return Projects.Query.project(undefined, { _id: entry.projectId })
     },
     worker: (entry) => {
-      return Workers.Query.worker(undefined, { _id: entry.workerId })
+      return ProjectWorkers.Query.workerByProjectAndWorkerId(entry.projectId, entry.workerId)
     }
   },
   Mutation: {

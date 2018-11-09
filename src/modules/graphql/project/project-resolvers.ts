@@ -42,8 +42,10 @@ const projectResolvers = {
         addWorkerToProject: async (_, args) => {
             let updateObject = {}
             const { projectId, workerId, rate } = args
-            updateObject[`${projectWorkersPath}/${projectId}/${workerId}`] = {rate: rate}
-            updateObject[`${workerProjectsPath}/${workerId}/${projectId}`] = {rate: rate}
+            const worker = await getEntity('workers', workerId)
+
+            updateObject[`${projectWorkersPath}/${projectId}/${workerId}`] = {rate, name: worker.name}
+            updateObject[`${workerProjectsPath}/${workerId}/${projectId}`] = {rate, name: worker.name}
             await updateMultiPathEntity(updateObject)
             return {
                 message: 'Worker added to project'
