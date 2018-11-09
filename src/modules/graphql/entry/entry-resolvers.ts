@@ -17,10 +17,7 @@ const entryResolvers = {
     entriesByProjectId: (_, args) => getEntitiesByValue(path, 'projectId', args.projectId),
     entriesByWorkerId: (_, args) => getEntitiesByValue(path, 'workerId', args.workerId),
     entriesByBillId: (_, args) => getEntitiesByValue(path, 'billId', args.billId),
-    entriesByProjectIdAndTimeRange: (_, {projectId, start, end}) => {
-      console.log("ENTRY ARGS:", projectId, start, end)
-      return getEntitiesByValueAndTimeRange(path, 'start', start, 'end', end, { 'projectId': projectId })
-    }
+    entriesByProjectIdAndTimeRange: (_, {projectId, start, end}) => getEntitiesByValueAndTimeRange(path, 'start', start, 'end', end, { 'projectId': projectId })
   },
   Entry: {
     bill: (entry) => {
@@ -39,7 +36,9 @@ const entryResolvers = {
         const start = moment(args.start)
         const end = moment(args.end)
         const price = worker.rate * moment.duration(end.diff(start)).asHours()
-        pushEntity(path, Object.assign({ price: price }, args))
+        const hours = moment.duration(end.diff(start)).asHours()
+        const hoursFormatted = moment.utc(hours*3600*1000).format('HH:mm') 
+        pushEntity(path, Object.assign({ price: price, hours: hours, hoursFormatted: hoursFormatted }, args))
       })
     },
     updateEntry: (_, { _id, ...rest }: { _id: string }) => updateEntity(path, _id, rest),

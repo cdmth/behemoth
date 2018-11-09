@@ -13,6 +13,8 @@ const entrySchema =
     billId: String
     description: String
     price: Float
+    hours: Float
+    hoursFormatted: String
     bill: Bill
     project: Project
     worker: Worker
