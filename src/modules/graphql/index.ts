@@ -2,6 +2,7 @@ import { makeExecutableSchema } from 'graphql-tools'
 import { mergeTypes, mergeResolvers} from 'merge-graphql-schemas'
 import { ApolloServer } from 'apollo-server-express'
 
+import { validateAuthorization } from '../firebase/index'
 import customerSchema from './customer/customer-schema' 
 import customerResolvers from './customer/customer-resolvers'
 import entrySchema from './entry/entry-schema'
@@ -52,4 +53,16 @@ export const schema = makeExecutableSchema({
       }
 })
 
-export const server = new ApolloServer({ schema })
+export const server = new ApolloServer({ 
+    schema, 
+    context: async ({ req }) => {
+    // get the user token from the headers
+    const token = req.headers.authorization || '';
+    
+    // try to retrieve a user with the token
+    const user = await validateAuthorization(token);
+    
+    // add the user to the context
+    return { user };
+  }
+})

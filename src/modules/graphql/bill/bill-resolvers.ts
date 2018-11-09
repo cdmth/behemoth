@@ -26,7 +26,7 @@ const billResolvers = {
     bills: () => getEntities(path),
     unbilledEntriesInProjects: async () => {
       let entries = await getEntitiesByValueNotExisting('entries', 'billId')
-
+      
       // Find unique project IDs
       let projectIds = []
 

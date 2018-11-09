@@ -240,6 +240,10 @@ const createListenerWorker = (path:string) => {
   })
 }
 
+const validateAuthorization = async (token: string) => {
+  return await admin.auth().verifyIdToken(token);
+};
+
 createListenerWorker("workers")
 createListenerWorker("projectWorkers")
 createListenerWorker("customers")
@@ -261,5 +265,6 @@ export {
   getRelations,
   createAccount,
   login,
-  getEntitiesByValueNotExisting
+  getEntitiesByValueNotExisting,
+  validateAuthorization
 }
